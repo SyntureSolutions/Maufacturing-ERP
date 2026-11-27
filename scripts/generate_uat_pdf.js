@@ -1,0 +1,1241 @@
+const fs = require('fs');
+const path = require('path');
+const { execSync } = require('child_process');
+
+const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prodexa ERP - UAT Workflow Testing Manual</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 14mm 14mm 16mm 14mm;
+      @bottom-right {
+        content: counter(page);
+      }
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.5;
+      color: #1e293b;
+      background-color: #ffffff;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .page-break {
+      page-break-after: always;
+      break-after: page;
+    }
+    .avoid-break {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    
+    /* Cover Page */
+    .cover-container {
+      height: 94vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 40px;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .cover-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #cbd5e1;
+      padding-bottom: 20px;
+    }
+    .brand-title {
+      font-size: 26pt;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+    .brand-badge {
+      background-color: #d97706;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 10pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .cover-body {
+      margin: auto 0;
+    }
+    .doc-category {
+      color: #b45309;
+      font-size: 13pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 12px;
+    }
+    .doc-main-title {
+      font-size: 32pt;
+      font-weight: 900;
+      color: #0f172a;
+      line-height: 1.15;
+      margin-bottom: 18px;
+    }
+    .doc-subtitle {
+      font-size: 14pt;
+      color: #475569;
+      font-weight: 400;
+      line-height: 1.5;
+      max-width: 650px;
+      margin-bottom: 30px;
+    }
+    .metadata-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      background-color: #ffffff;
+      padding: 24px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .meta-label {
+      font-size: 9pt;
+      text-transform: uppercase;
+      color: #64748b;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .meta-value {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #1e293b;
+      margin-top: 4px;
+    }
+    .cover-footer {
+      border-top: 1px solid #cbd5e1;
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 9pt;
+      color: #64748b;
+    }
+
+    /* Content Layout */
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1.5px solid #e2e8f0;
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+      font-size: 9pt;
+      color: #64748b;
+    }
+    .footer-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 8px;
+      margin-top: 30px;
+      font-size: 8.5pt;
+      color: #94a3b8;
+    }
+    h1 {
+      font-size: 19pt;
+      color: #0f172a;
+      font-weight: 800;
+      margin-bottom: 14px;
+      border-left: 5px solid #d97706;
+      padding-left: 12px;
+      letter-spacing: -0.3px;
+    }
+    h2 {
+      font-size: 14pt;
+      color: #1e293b;
+      font-weight: 700;
+      margin-top: 22px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    h3 {
+      font-size: 11.5pt;
+      color: #334155;
+      font-weight: 700;
+      margin-top: 14px;
+      margin-bottom: 6px;
+    }
+    p {
+      margin-bottom: 10px;
+      color: #334155;
+    }
+    ul, ol {
+      margin-left: 20px;
+      margin-bottom: 12px;
+      color: #334155;
+    }
+    li {
+      margin-bottom: 4px;
+    }
+
+    /* Modern Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      margin-bottom: 18px;
+      font-size: 9.5pt;
+    }
+    th {
+      background-color: #0f172a;
+      color: #ffffff;
+      text-align: left;
+      padding: 8px 10px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      border: 1px solid #0f172a;
+    }
+    td {
+      padding: 7px 10px;
+      border: 1px solid #cbd5e1;
+      vertical-align: top;
+      color: #1e293b;
+    }
+    tr:nth-child(even) td {
+      background-color: #f8fafc;
+    }
+    
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 8pt;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+    .badge-amber { background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+    .badge-green { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .badge-blue { background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+    .badge-purple { background-color: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; }
+    .badge-red { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .badge-slate { background-color: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; }
+
+    /* Callout Cards */
+    .callout {
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin: 12px 0 16px 0;
+      font-size: 9.5pt;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .callout-amber {
+      background-color: #fffbeb;
+      border-left: 4px solid #d97706;
+      color: #92400e;
+    }
+    .callout-blue {
+      background-color: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      color: #1e40af;
+    }
+    .callout-green {
+      background-color: #f0fdf4;
+      border-left: 4px solid #22c55e;
+      color: #166534;
+    }
+    .callout-red {
+      background-color: #fef2f2;
+      border-left: 4px solid #ef4444;
+      color: #991b1b;
+    }
+    .callout-icon {
+      font-size: 14pt;
+      line-height: 1;
+    }
+
+    /* Workflow Diagram Box */
+    .workflow-flowchart {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px;
+      margin: 14px 0 20px 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+    .wf-step {
+      background-color: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 7px 12px;
+      font-size: 9pt;
+      font-weight: 700;
+      color: #0f172a;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    .wf-step.active {
+      border-color: #d97706;
+      background-color: #fffbeb;
+      color: #b45309;
+    }
+    .wf-arrow {
+      color: #94a3b8;
+      font-weight: 900;
+      font-size: 12pt;
+    }
+
+    /* Checkbox & Test Step Cards */
+    .test-card {
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      margin-bottom: 14px;
+      background-color: #ffffff;
+      page-break-inside: avoid;
+    }
+    .test-card-header {
+      background-color: #f1f5f9;
+      padding: 8px 12px;
+      border-bottom: 1px solid #cbd5e1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .test-card-title {
+      font-weight: 700;
+      font-size: 10pt;
+      color: #0f172a;
+    }
+    .test-card-body {
+      padding: 10px 12px;
+      font-size: 9.5pt;
+    }
+    .test-grid {
+      display: grid;
+      grid-template-columns: 80px 1fr 1fr 100px;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .tg-label {
+      font-weight: 700;
+      color: #64748b;
+      font-size: 8.5pt;
+      text-transform: uppercase;
+    }
+    .tg-val {
+      color: #1e293b;
+    }
+    .checkbox-box {
+      display: inline-block;
+      width: 13px;
+      height: 13px;
+      border: 1.5px solid #475569;
+      border-radius: 3px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    /* Sign-off Block */
+    .signoff-table td {
+      height: 48px;
+      vertical-align: bottom;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== PAGE 1: COVER PAGE ==================== -->
+  <div class="cover-container">
+    <div class="cover-header">
+      <div class="brand-title">PRODEXA ERP <span style="font-weight: 300; color: #64748b;">| Inventry Pro</span></div>
+      <div class="brand-badge">UAT Release v1.2.0</div>
+    </div>
+    <div class="cover-body">
+      <div class="doc-category">User Acceptance Testing (UAT) Manual & Standard Operating Procedure</div>
+      <div class="doc-main-title">End-to-End Workflow Testing Guide</div>
+      <div class="doc-subtitle">
+        A comprehensive validation guide covering Order-to-Cash (O2C), Procure-to-Pay (P2P), Quality & NCR Defect Management, FEFO Batch Inwarding, Rule 55 Delivery Challans, GST Tax Invoices, Payment Settlement, and Lineage Traceability.
+      </div>
+      <div class="metadata-grid">
+        <div class="meta-item">
+          <span class="meta-label">Target Environment</span>
+          <span class="meta-value">UAT Staging (<a href="http://localhost:3000" style="color:#d97706; text-decoration:none;">http://localhost:3000</a>)</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Document ID & Date</span>
+          <span class="meta-value">SOP-UAT-PRD-2026-V1 &bull; 15 Oct 2026</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Automated Test Baseline</span>
+          <span class="meta-value" style="color: #15803d;">347 / 347 Automated Unit & Integration Tests Passing</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Target Audience</span>
+          <span class="meta-value">QA Leads, Business Users, Commercial & Finance Stakeholders</span>
+        </div>
+      </div>
+    </div>
+    <div class="cover-footer">
+      <div>Enterprise Manufacturing & Inventory System</div>
+      <div>Confidential & Internal Quality Assurance Use Only</div>
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- ==================== PAGE 2: OBJECTIVES & TEST CREDENTIALS ==================== -->
+  <div class="header-bar">
+    <span>Prodexa ERP &bull; UAT Testing Manual</span>
+    <span>Section 1: Setup & User Access Matrix</span>
+  </div>
+
+  <h1>1. Overview & Test Environment Setup</h1>
+  <p>
+    This Standard Operating Procedure (SOP) provides step-by-step instructions for executing comprehensive User Acceptance Testing (UAT) on Prodexa ERP. Every user action is mapped with required inputs, expected system behavior, and formal pass/fail verification checkboxes.
+  </p>
+
+  <div class="callout callout-blue">
+    <div class="callout-icon">&#9432;</div>
+    <div>
+      <strong>UAT Environment URL:</strong> Access the application at <code>http://localhost:3000/login</code> (or your staging domain). Both live MongoDB Atlas and zero-latency in-memory fallback stores are supported to guarantee continuous testing without server interruption.
+    </div>
+  </div>
+
+  <h2>Role-Based Access Control (RBAC) Test Accounts</h2>
+  <p>Log in with any of the pre-configured executive test credentials below to validate distinct role-gated capabilities:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Role & Department</th>
+        <th>User ID / Email</th>
+        <th>Default Password</th>
+        <th>Key Modules & Permissions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Admin (Super Executive)</strong></td>
+        <td><code>admin@inventorypro.com</code></td>
+        <td><code>123456789</code></td>
+        <td><span class="badge badge-purple">Full Control</span> All 10 Modules, Master Setup, Global Overrides</td>
+      </tr>
+      <tr>
+        <td><strong>B2B Sales Manager</strong></td>
+        <td><code>sales@inventorypro.com</code></td>
+        <td><code>123456789</code></td>
+        <td><span class="badge badge-amber">Sales & Dispatch</span> Enquiries, Quotations, Sales Orders, Customer Master</td>
+      </tr>
+      <tr>
+        <td><strong>Supply Chain Manager</strong></td>
+        <td><code>supplychain@inventorypro.com</code></td>
+        <td><code>123456789</code></td>
+        <td><span class="badge badge-blue">Procurement</span> Purchase Requisitions, POs, Inward GRN, Supplier Master</td>
+      </tr>
+      <tr>
+        <td><strong>Quality Control Inspector</strong></td>
+        <td><code>quality@inventorypro.com</code></td>
+        <td><code>123456789</code></td>
+        <td><span class="badge badge-red">Quality & NCR</span> Inward QC, Sampling Inspection, Defect Logging, NCRs</td>
+      </tr>
+      <tr>
+        <td><strong>Production Manager</strong></td>
+        <td><code>production@inventorypro.com</code></td>
+        <td><code>123456789</code></td>
+        <td><span class="badge badge-green">Shop Floor</span> MRP Runs, Work Orders, BOMs, Job Cards, Machine OEE</td>
+      </tr>
+      <tr>
+        <td><strong>Finance Controller (CFO)</strong></td>
+        <td><code>finance@inventorypro.com</code></td>
+        <td><code>123456789</code></td>
+        <td><span class="badge badge-slate">Accounts</span> GST Tax Invoices, Vendor Bills, Payment Vouchers, Credit/Debit</td>
+      </tr>
+      <tr>
+        <td><strong>HR & Labour Superintendent</strong></td>
+        <td><code>hr@inventorypro.com</code></td>
+        <td><code>123456789</code></td>
+        <td><span class="badge badge-slate">Workforce</span> Technician Onboarding, Shift Wages, Overtime Approvals</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>High-Level Manufacturing ERP Core Architecture</h2>
+  <div class="workflow-flowchart">
+    <div class="wf-step">1. Master Setup<br><small style="color:#64748b">Cust/Supp/Item</small></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step">2. Procure-to-Pay<br><small style="color:#64748b">PO &rarr; GRN &rarr; QC</small></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step">3. FEFO Inventory<br><small style="color:#64748b">Batch Allocation</small></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step">4. Order-to-Cash<br><small style="color:#64748b">Enquiry &rarr; Quote &rarr; SO</small></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step">5. Rule 55 DC<br><small style="color:#64748b">Dispatch &rarr; Inv</small></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step">6. Financials<br><small style="color:#64748b">Payment &bull; CN/DN</small></div>
+  </div>
+
+  <div class="callout callout-amber">
+    <div class="callout-icon">&#9888;</div>
+    <div>
+      <strong>Pre-Test Requirement:</strong> Ensure test browser caches are cleared or run tests in an Incognito/Private window to prevent stale session cookies.
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span>Prodexa ERP v1.2.0 &bull; Confidential</span>
+    <span>Page 2 of 9</span>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- ==================== PAGE 3: MASTER DATA SETUP ==================== -->
+  <div class="header-bar">
+    <span>Prodexa ERP &bull; UAT Testing Manual</span>
+    <span>Section 2: Master Data Setup</span>
+  </div>
+
+  <h1>2. Master Data Setup & Prerequisites</h1>
+  <p>Before launching transactional sales or procurement cycles, verify the master data creation modules:</p>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">TC-MD-01: Category Hierarchy Management</span>
+      <span class="badge badge-blue">Path: /dashboard/products &bull; + New Category</span>
+    </div>
+    <div class="test-card-body">
+      <p><strong>Goal:</strong> Create a multi-tier product category with storage instructions and safety alerts.</p>
+      <div class="test-grid">
+        <div class="tg-label">Action:</div>
+        <div class="tg-val">Click <strong>+ New Category</strong>. Enter Category Name: <code>Processed Foods</code>, Code: <code>CAT-FOOD</code>, Description: <code>Ready-to-eat packaged items</code>, Parent Category: <em>(None - Root)</em>.</div>
+        <div class="tg-label">Expected:</div>
+        <div class="tg-val">Category saves instantly, displays in category tree/dropdown, and becomes selectable in Product Master.</div>
+      </div>
+      <div style="margin-top: 8px;"><span class="checkbox-box"></span><strong>Verified:</strong> Category listed in table without errors.</div>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">TC-MD-02: Product Master with Dual Pricing & HSN</span>
+      <span class="badge badge-blue">Path: /dashboard/products &bull; + Add Product</span>
+    </div>
+    <div class="test-card-body">
+      <p><strong>Goal:</strong> Verify creation of items with both Sales Price (for Quotations/Invoices) and Purchase Price (for POs).</p>
+      <div class="test-grid">
+        <div class="tg-label">Action:</div>
+        <div class="tg-val">
+          Click <strong>+ Add Product</strong>. Provide:<br>
+          &bull; Name: <code>Premium Roasted Almonds 500g</code> &bull; SKU: <code>ALM-500G</code><br>
+          &bull; Category: <code>Processed Foods</code> &bull; Unit: <code>PKT</code> &bull; Min Stock: <code>50</code><br>
+          &bull; <strong>Selling Price (Rs.):</strong> <code>450.00</code> &bull; <strong>Purchase Price (Rs.):</strong> <code>320.00</code><br>
+          &bull; HSN Code: <code>200819</code> &bull; GST Rate: <code>12%</code>
+        </div>
+        <div class="tg-label">Expected:</div>
+        <div class="tg-val">Item is added to inventory catalog. When chosen in a Purchase Order, unit price defaults to Rs. 320; when chosen in a Quotation/SO, unit price defaults to Rs. 450.</div>
+      </div>
+      <div style="margin-top: 8px;"><span class="checkbox-box"></span><strong>Verified:</strong> Dual price fields saved and rendered in product inventory card.</div>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">TC-MD-03: Supplier Master Setup with Commercial Terms</span>
+      <span class="badge badge-blue">Path: /dashboard/suppliers &bull; + Add Supplier</span>
+    </div>
+    <div class="test-card-body">
+      <p><strong>Goal:</strong> Register a verified raw material vendor with statutory GSTIN and bank details.</p>
+      <div class="test-grid">
+        <div class="tg-label">Action:</div>
+        <div class="tg-val">
+          Click <strong>+ Add Supplier</strong>. Enter:<br>
+          &bull; Name: <code>National Agro Commodities Ltd</code> &bull; Code: <code>SUP-001</code><br>
+          &bull; GSTIN: <code>27AAACN1234F1Z8</code> (Maharashtra - 27) &bull; PAN: <code>AAACN1234F</code><br>
+          &bull; Payment Terms: <code>Net 30 Days</code> &bull; Lead Time: <code>5 Days</code> &bull; City: <code>Mumbai</code>
+        </div>
+        <div class="tg-label">Expected:</div>
+        <div class="tg-val">Supplier is saved. Commercial terms (Lead Time badge, GSTIN, Payment Terms) display on the supplier card.</div>
+      </div>
+      <div style="margin-top: 8px;"><span class="checkbox-box"></span><strong>Verified:</strong> Supplier appears in PO dropdown and badge displays in table.</div>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">TC-MD-04: Customer Master Setup with Auto State-Code</span>
+      <span class="badge badge-blue">Path: /dashboard/sales or /dashboard/orders &bull; + New Customer</span>
+    </div>
+    <div class="test-card-body">
+      <p><strong>Goal:</strong> Validate customer registration with automatic state code extraction from GSTIN and credit limits.</p>
+      <div class="test-grid">
+        <div class="tg-label">Action:</div>
+        <div class="tg-val">
+          Click <strong>+ New Customer</strong>. Enter:<br>
+          &bull; Name: <code>Apex Supermarket Retail Chain</code> &bull; Contact: <code>Rajesh Sharma</code><br>
+          &bull; GSTIN: <code>24AABCA5678E1Z4</code> (Gujarat - 24) &bull; Email: <code>procurement@apexretail.in</code><br>
+          &bull; Billing Address: <code>S.G. Highway, Bodakdev</code>, City: <code>Ahmedabad</code>, Pin: <code>380054</code><br>
+          &bull; Credit Limit: <code>Rs. 5,00,000</code> &bull; Payment Terms: <code>Net 15 Days</code>
+        </div>
+        <div class="tg-label">Expected:</div>
+        <div class="tg-val">State Code automatically populates as <code>24</code> from the GSTIN prefix. Customer is immediately available in Sales Enquiries and Orders.</div>
+      </div>
+      <div style="margin-top: 8px;"><span class="checkbox-box"></span><strong>Verified:</strong> Auto-extracted State Code 24 and billing details preserved.</div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span>Prodexa ERP v1.2.0 &bull; Confidential</span>
+    <span>Page 3 of 9</span>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- ==================== PAGE 4: PROCURE-TO-PAY (P2P) ==================== -->
+  <div class="header-bar">
+    <span>Prodexa ERP &bull; UAT Testing Manual</span>
+    <span>Section 3: Procure-to-Pay (P2P) Cycle</span>
+  </div>
+
+  <h1>3. Procure-to-Pay (P2P) Testing Workflow</h1>
+  <p>Validate the inward procurement stream: from raising a Purchase Order to receiving goods, QC defect handling, and settling vendor bills.</p>
+
+  <div class="workflow-flowchart">
+    <div class="wf-step">3.1 Purchase Order<br><small style="color:#64748b">Inline Supplier/Product</small></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step">3.2 Inward GRN<br><small style="color:#64748b">Batch & Expiry Date</small></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step">3.3 Quality QC<br><small style="color:#64748b">Pass OR Defect NCR</small></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step">3.4 3-Way Match<br><small style="color:#64748b">Vendor Bill Booking</small></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step">3.5 Payment Release<br><small style="color:#64748b">Bank UTR Voucher</small></div>
+  </div>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">TC-P2P-01: Purchase Order Creation with Inline Triggers</span>
+      <span class="badge badge-amber">Screen: /dashboard/purchase</span>
+    </div>
+    <div class="test-card-body">
+      <ol style="margin-left: 16px; margin-bottom: 8px;">
+        <li>Click <strong>+ Create Purchase Order</strong>. Verify inline <code>+ New Supplier</code> and <code>+ New Product</code> buttons exist.</li>
+        <li>Select Supplier <code>National Agro Commodities Ltd</code>. Notice payment terms auto-populate.</li>
+        <li>Add Line Item: <code>Premium Roasted Almonds 500g</code> &bull; Quantity: <code>200 PKT</code>.</li>
+        <li>Notice Unit Rate auto-populates as <code>Rs. 320.00</code>. Subtotal calculates as <code>Rs. 64,000.00</code>.</li>
+        <li>Verify Tax Breakdown (IGST 12% if inter-state or CGST 6% + SGST 6% if intra-state). Save PO.</li>
+      </ol>
+      <div style="margin-top: 6px;"><span class="checkbox-box"></span><strong>Expected Result:</strong> PO status becomes <code>APPROVED</code> / <code>ISSUED</code> with unique sequential PO Number (e.g. <code>PO-2026-0042</code>).</div>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">TC-P2P-02: Goods Receipt Note (GRN) & FEFO Batch Tagging</span>
+      <span class="badge badge-amber">Screen: /dashboard/inventory or GRN Tab</span>
+    </div>
+    <div class="test-card-body">
+      <ol style="margin-left: 16px; margin-bottom: 8px;">
+        <li>Click <strong>Create GRN</strong> against the approved PO.</li>
+        <li>Verify PO line items are imported with Ordered Qty = 200 PKT. Enter Received Qty = <code>200 PKT</code>.</li>
+        <li>Input mandatory Batch Details: Batch No: <code>BAT-ALM-2610A</code>, Expiry Date: <code>30/04/2027</code>.</li>
+        <li>Select Warehouse Location / Bin: <code>Bay-A / Cold Storage Rack 2</code>. Submit GRN.</li>
+      </ol>
+      <div style="margin-top: 6px;"><span class="checkbox-box"></span><strong>Expected Result:</strong> GRN is generated; stock moves into <em>Inspection Hold / Quarantined</em> awaiting QC sign-off.</div>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">TC-P2P-03: Quality Inspection (QC) & NCR Defect Disposition</span>
+      <span class="badge badge-red">Screen: /dashboard/quality</span>
+    </div>
+    <div class="test-card-body">
+      <p>Log in as <code>quality@inventorypro.com</code>. Locate GRN <code>BAT-ALM-2610A</code> under pending inspections.</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px;">
+        <div style="border: 1px solid #bbf7d0; background-color: #f0fdf4; padding: 8px; border-radius: 4px;">
+          <strong style="color: #166534;">Scenario A: QC Pass (Accepted)</strong>
+          <ul style="margin-left: 14px; margin-top: 4px; font-size: 8.5pt;">
+            <li>Input parameters: Moisture &lt; 5%, Microbial: Negative.</li>
+            <li>Status: Select <strong>PASS</strong> & Click Submit.</li>
+            <li><strong>Result:</strong> 200 PKT releases immediately into <strong>Available Free Stock</strong> for sales allocation.</li>
+          </ul>
+        </div>
+        <div style="border: 1px solid #fecaca; background-color: #fef2f2; padding: 8px; border-radius: 4px;">
+          <strong style="color: #991b1b;">Scenario B: QC Fail &rarr; Auto-NCR</strong>
+          <ul style="margin-left: 14px; margin-top: 4px; font-size: 8.5pt;">
+            <li>Status: Select <strong>FAIL</strong> &bull; Reason: <em>Pouch seal defect</em>.</li>
+            <li>NCR pop-up triggers: Severity: <code>Major</code>.</li>
+            <li>Disposition: <code>Return to Vendor</code>.</li>
+            <li><strong>Result:</strong> Defect logged, vendor debit note flagged, stock blocked from sale.</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top: 8px;"><span class="checkbox-box"></span><strong>Verified:</strong> QC pass activates inventory; QC fail isolates lot in Reject Store with an NCR ticket.</div>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">TC-P2P-04: 3-Way Match Vendor Bill & Payment Release</span>
+      <span class="badge badge-slate">Screen: /dashboard/finance &bull; Vendor Bills</span>
+    </div>
+    <div class="test-card-body">
+      <ol style="margin-left: 16px; margin-bottom: 8px;">
+        <li>Log in as <code>finance@inventorypro.com</code>. Check "Awaiting Vendor Bill" queue.</li>
+        <li>Select PO & GRN. Click <strong>Generate Vendor Bill</strong>. Input Vendor Invoice No: <code>NAC/INV/9821</code>.</li>
+        <li>Verify 3-way match: PO Price (Rs. 320) x Accepted GRN Qty (200) = Rs. 64,000 + GST 12% = <code>Rs. 71,680.00</code>.</li>
+        <li>Click <strong>Release Payment</strong> &rarr; Select Bank: <code>HDFC Current A/c</code> &bull; Mode: <code>NEFT</code> &bull; Enter UTR: <code>HDFCN26289012345</code>.</li>
+      </ol>
+      <div style="margin-top: 6px;"><span class="checkbox-box"></span><strong>Expected Result:</strong> Payment voucher posts to Bank Ledger; Vendor Bill status changes to <code>PAID</code>; PO payment badge updates.</div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span>Prodexa ERP v1.2.0 &bull; Confidential</span>
+    <span>Page 4 of 9</span>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- ==================== PAGE 5: ORDER-TO-CASH (O2C) ==================== -->
+  <div class="header-bar">
+    <span>Prodexa ERP &bull; UAT Testing Manual</span>
+    <span>Section 4: Order-to-Cash (O2C) Full Lifecycle</span>
+  </div>
+
+  <h1>4. Order-to-Cash (O2C) Testing Workflow</h1>
+  <p>
+    Validate the core revenue pipeline: from initial customer enquiry to delivery under CGST Rule 55, GST Tax Invoicing, collections, and credit/debit adjustments.
+  </p>
+
+  <div class="workflow-flowchart">
+    <div class="wf-step">4.1 Enquiry<br><small style="color:#64748b">Sales Block 1</small></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step">4.2 Quotation<br><small style="color:#64748b">Draft &rarr; PO Recv</small></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step">4.3 Sales Order<br><small style="color:#64748b">FEFO Stock Reserv</small></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step">4.4 Rule 55 DC<br><small style="color:#64748b">Triplicate Challan</small></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step">4.5 Tax Invoice<br><small style="color:#64748b">HSN &bull; IRN &bull; QR</small></div>
+    <div class="wf-arrow">&rarr;</div>
+    <div class="wf-step">4.6 Settlement<br><small style="color:#64748b">Voucher / CN / DN</small></div>
+  </div>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">TC-O2C-01: Customer Enquiry Logging</span>
+      <span class="badge badge-amber">Screen: /dashboard/sales &bull; Tab 1 (Enquiries)</span>
+    </div>
+    <div class="test-card-body">
+      <ol style="margin-left: 16px; margin-bottom: 6px;">
+        <li>Log in as <code>sales@inventorypro.com</code>. Click <strong>+ New Enquiry</strong>.</li>
+        <li>Select Customer: <code>Apex Supermarket Retail Chain</code>. Target Date: <code>+7 Days</code>.</li>
+        <li>Add Item: <code>Premium Roasted Almonds 500g</code> &bull; Required Quantity: <code>100 PKT</code>.</li>
+        <li>Click <strong>Save Enquiry</strong>.</li>
+      </ol>
+      <div><span class="checkbox-box"></span><strong>Expected:</strong> Enquiry is saved with status <code>OPEN</code> and appears in Block 1 of the sales desk.</div>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">TC-O2C-02: Quotation Formulation & PO Received Transition</span>
+      <span class="badge badge-amber">Screen: /dashboard/sales &bull; Tab 2 (Quotations)</span>
+    </div>
+    <div class="test-card-body">
+      <ol style="margin-left: 16px; margin-bottom: 6px;">
+        <li>Click <strong>Convert to Quotation</strong> on the Enquiry card.</li>
+        <li>Notice item rate defaults to <code>Rs. 450.00</code>. Subtotal = <code>Rs. 45,000.00</code>.</li>
+        <li>Apply Commercial Discount: <code>5%</code> (Rs. 2,250.00). Taxable Value = <code>Rs. 42,750.00</code>.</li>
+        <li>GST Calculation: Inter-state (Customer Gujarat 24 vs Factory 27) &rarr; IGST 12% = <code>Rs. 5,130.00</code>. Net = <code>Rs. 47,880.00</code>.</li>
+        <li>Change status: <code>DRAFT</code> &rarr; <code>SENT</code> &rarr; <code>PO_RECEIVED</code> (attach Customer PO No: <code>APEX-PO-8812</code>).</li>
+      </ol>
+      <div><span class="checkbox-box"></span><strong>Expected:</strong> Quotation progresses through states; PO Number is recorded and locked.</div>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">TC-O2C-03: Sales Order (SO) Confirmation & FEFO Stock Reservation</span>
+      <span class="badge badge-amber">Screen: /dashboard/sales &bull; Tab 3 (Sales Orders)</span>
+    </div>
+    <div class="test-card-body">
+      <ol style="margin-left: 16px; margin-bottom: 6px;">
+        <li>Click <strong>Confirm as Sales Order</strong> from Quotation.</li>
+        <li>Sequential Order ID generated (e.g. <code>SO-2026-0089</code>).</li>
+        <li>Verify FEFO Stock Allocation: The system scans batches for <code>ALM-500G</code>, sorting by earliest expiry date (Batch <code>BAT-ALM-2610A</code>), and reserves 100 PKT. Free available stock reduces from 200 to 100 PKT.</li>
+        <li>Verify Credit Limit Check: Order value (Rs. 47,880) is verified against Customer Credit Limit (Rs. 5,00,000). Passes without hold.</li>
+      </ol>
+      <div><span class="checkbox-box"></span><strong>Expected:</strong> SO status becomes <code>CONFIRMED</code> / <code>ALLOCATED</code>; batch reservation is verified in inventory logs.</div>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">TC-O2C-04: Pick, Pack & Rule 55 Delivery Challan (Dispatch Desk)</span>
+      <span class="badge badge-green">Screen: /dashboard/dispatch</span>
+    </div>
+    <div class="test-card-body">
+      <ol style="margin-left: 16px; margin-bottom: 6px;">
+        <li>Open Dispatch Desk. Select Confirmed SO <code>SO-2026-0089</code>.</li>
+        <li>Click <strong>Generate Pick List</strong> &rarr; Pick items from Cold Storage Rack 2 &rarr; Click <strong>Pack Order</strong>.</li>
+        <li>Click <strong>Generate Delivery Challan (Rule 55)</strong>. Enter Transporter: <code>SafeXpress Logistics</code>, Vehicle No: <code>MH-04-AB-1234</code>, LR No: <code>LR-998822</code>.</li>
+        <li>Click <strong>Print Challan</strong>.</li>
+      </ol>
+      <div class="callout callout-amber" style="padding: 6px 10px; margin: 6px 0;">
+        <strong>Statutory Rule 55 Check:</strong> Verify printout generates in <strong>Triplicate</strong>:<br>
+        1. <em>Original for Consignee</em> &bull; 2. <em>Duplicate for Transporter</em> &bull; 3. <em>Triplicate for Consignor</em>.<br>
+        Commercial rates are suppressed (showing quantity, HSN, batch & "Delivery under Challan - Not for Direct Sale").
+      </div>
+      <div><span class="checkbox-box"></span><strong>Expected:</strong> Challan generated (<code>DC-2026-0031</code>); Physical goods leave warehouse; inventory stock deducted.</div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span>Prodexa ERP v1.2.0 &bull; Confidential</span>
+    <span>Page 5 of 9</span>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- ==================== PAGE 6: INVOICING, PAYMENTS & CREDIT/DEBIT ==================== -->
+  <div class="header-bar">
+    <span>Prodexa ERP &bull; UAT Testing Manual</span>
+    <span>Section 5: Invoicing, Payments & Adjustments</span>
+  </div>
+
+  <h1>5. Invoicing, Collections & Credit/Debit Notes</h1>
+  <p>Verify legal GST Tax Invoicing derived from dispatched Delivery Challans, inward bank collection reconciliations, and commercial returns handling.</p>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">TC-O2C-05: Tax Invoice Generation from Delivery Challan</span>
+      <span class="badge badge-slate">Screen: /dashboard/finance &bull; Invoices</span>
+    </div>
+    <div class="test-card-body">
+      <ol style="margin-left: 16px; margin-bottom: 6px;">
+        <li>Log in as <code>finance@inventorypro.com</code>. Locate Challan <code>DC-2026-0031</code> under "Unbilled Dispatches".</li>
+        <li>Click <strong>Convert to Tax Invoice</strong>. Verify sequential Tax Invoice series (e.g. <code>INV/2026-27/0114</code>).</li>
+        <li>Verify HSN & GST Summary Table:
+          <table>
+            <thead>
+              <tr><th>HSN Code</th><th>Taxable Amt</th><th>CGST Rate</th><th>SGST Rate</th><th>IGST Rate</th><th>Total GST</th><th>Gross Total</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>200819</td><td>Rs. 42,750.00</td><td>-</td><td>-</td><td>12%</td><td>Rs. 5,130.00</td><td>Rs. 47,880.00</td></tr>
+            </tbody>
+          </table>
+        </li>
+        <li>Verify compliance placeholders: <strong>IRN QR Code</strong> & <strong>E-Way Bill No</strong> (auto-linked from vehicle details). Click <strong>Post Invoice</strong>.</li>
+      </ol>
+      <div><span class="checkbox-box"></span><strong>Expected:</strong> Invoice moves to Accounts Receivable ledger; GST liability posted to GSTR-1 register.</div>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">TC-O2C-06: Customer Inward Payment Settlement</span>
+      <span class="badge badge-slate">Screen: /dashboard/finance &bull; Payment Vouchers</span>
+    </div>
+    <div class="test-card-body">
+      <ol style="margin-left: 16px; margin-bottom: 6px;">
+        <li>Click <strong>Record Customer Receipt</strong>. Select Customer: <code>Apex Supermarket Retail Chain</code>.</li>
+        <li>Outstanding invoice <code>INV/2026-27/0114</code> (Rs. 47,880) displays in pending list.</li>
+        <li>Enter Received Amount: <code>Rs. 47,880.00</code> &bull; Mode: <code>RTGS</code> &bull; Cheque/Ref No: <code>AXIS-R-261908</code> &bull; Deposit Bank: <code>HDFC Bank</code>.</li>
+        <li>Click <strong>Post Receipt</strong>.</li>
+      </ol>
+      <div><span class="checkbox-box"></span><strong>Expected:</strong> Invoice status flips to <code>PAID</code>; Customer ledger balance clears; Bank ledger debited.</div>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">TC-O2C-07: Credit Note Workflow (Sales Return / Rate Difference)</span>
+      <span class="badge badge-red">Screen: /dashboard/finance &bull; Credit/Debit Notes</span>
+    </div>
+    <div class="test-card-body">
+      <p><strong>Scenario:</strong> Customer returns 10 PKT damaged during transit.</p>
+      <ol style="margin-left: 16px; margin-bottom: 6px;">
+        <li>Click <strong>+ Issue Credit Note</strong>. Link Tax Invoice <code>INV/2026-27/0114</code>.</li>
+        <li>Reason: <code>Transit Damage Return</code> &bull; Line Item: <code>10 PKT</code> &bull; Credit Value: <code>Rs. 4,275.00 + IGST 12% (Rs. 513.00) = Rs. 4,788.00</code>.</li>
+        <li>Inventory Option: Check <strong>Inward to Damaged/Scrap Store</strong> (does not mix with saleable stock).</li>
+        <li>Submit Credit Note.</li>
+      </ol>
+      <div><span class="checkbox-box"></span><strong>Expected:</strong> Credit Note <code>CN-2026-0005</code> generated; GST output tax liability reduced by Rs. 513; 10 PKT logged in scrap.</div>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">TC-O2C-08: Debit Note Workflow (Supplementary Charge / Freight)</span>
+      <span class="badge badge-amber">Screen: /dashboard/finance &bull; Credit/Debit Notes</span>
+    </div>
+    <div class="test-card-body">
+      <p><strong>Scenario:</strong> Additional demurrage / cold chain express freight billed to customer.</p>
+      <ol style="margin-left: 16px; margin-bottom: 6px;">
+        <li>Click <strong>+ Issue Debit Note</strong>. Link Customer: <code>Apex Supermarket Retail Chain</code>.</li>
+        <li>Reason: <code>Express Reefer Freight Surcharge</code> &bull; Amount: <code>Rs. 2,000.00 + GST 18% (Rs. 360.00) = Rs. 2,360.00</code>.</li>
+        <li>Submit Debit Note.</li>
+      </ol>
+      <div><span class="checkbox-box"></span><strong>Expected:</strong> Customer receivable increases by Rs. 2,360; Supplementary GST liability logged.</div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span>Prodexa ERP v1.2.0 &bull; Confidential</span>
+    <span>Page 6 of 9</span>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- ==================== PAGE 7: LINEAGE CHAIN & PRODUCTION ==================== -->
+  <div class="header-bar">
+    <span>Prodexa ERP &bull; UAT Testing Manual</span>
+    <span>Section 6: Document Lineage & Shop Floor Operations</span>
+  </div>
+
+  <h1>6. Lineage Traceability & Shop Floor Operations</h1>
+  <p>Verify multi-tier document connectivity and manufacturing work order executions.</p>
+
+  <h2>Document Lineage Chain Widget Verification</h2>
+  <p>Prodexa ERP features an interactive <strong>DocumentLineageBar</strong> widget embedded on every operational screen. Verify seamless bi-directional navigation across document ancestors and descendants:</p>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">TC-TR-01: End-to-End Lineage Chain Traversal</span>
+      <span class="badge badge-purple">Screen: Any Operational Document (SO / PO / DC / Invoice)</span>
+    </div>
+    <div class="test-card-body">
+      <ol style="margin-left: 16px; margin-bottom: 8px;">
+        <li>Navigate to Sales Order <code>SO-2026-0089</code>. Locate the <strong>Document Lineage Bar</strong> at the top/side of the page.</li>
+        <li>Verify all nodes appear in chronological order with visual status colors:
+          <div style="margin: 8px 0; font-family: monospace; font-size: 9pt; background: #f8fafc; padding: 6px 10px; border-radius: 4px; border: 1px solid #e2e8f0;">
+            [Enquiry ENQ-01] &rarr; [Quote QT-01] &rarr; [SO-0089] &rarr; [Challan DC-0031] &rarr; [Invoice INV-0114] &rarr; [Receipt REC-009]
+          </div>
+        </li>
+        <li>Click any node (e.g. <code>DC-0031</code>). A side-drawer or detail modal opens immediately displaying Challan transporter, vehicle, and items.</li>
+        <li>Role Privacy Check: Log in as <code>sales@inventorypro.com</code> &rarr; verify commercial/cost nodes are masked where appropriate according to role limits.</li>
+      </ol>
+      <div><span class="checkbox-box"></span><strong>Verified:</strong> Complete 6-document graph traversed without broken links or missing document keys.</div>
+    </div>
+  </div>
+
+  <h2>Manufacturing, Work Orders & Shop Floor Operations</h2>
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">TC-MFG-01: BOM Explosion & Work Order Job Card</span>
+      <span class="badge badge-green">Screen: /dashboard/orders or Production Desk</span>
+    </div>
+    <div class="test-card-body">
+      <ol style="margin-left: 16px; margin-bottom: 8px;">
+        <li>Log in as <code>production@inventorypro.com</code>. Select Make-to-Order Sales Order.</li>
+        <li>Click <strong>Run MRP for this Order</strong>. Verify Bill of Materials (BOM) explodes required raw ingredients (Raw Almonds, Flavor Seasoning, Nitrogen Foil Bags).</li>
+        <li>Check Stock Netting: System generates Purchase Indents for shortfall items and creates Work Order <code>WO-2026-0018</code> for available materials.</li>
+        <li>Click <strong>Print Job Card</strong>: Verify Work Order prints with routing stages (Sorting &rarr; Roasting &rarr; Seasoning &rarr; Nitrogen Packing) and barcode for shop floor scanner tracking.</li>
+      </ol>
+      <div><span class="checkbox-box"></span><strong>Verified:</strong> BOM exploded cleanly, shortfall indents tagged with SO ref, printable Job Card rendered.</div>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">TC-MFG-02: Technician & Machine Commissioning</span>
+      <span class="badge badge-green">Screen: /dashboard/oee & /dashboard/labour</span>
+    </div>
+    <div class="test-card-body">
+      <ol style="margin-left: 16px; margin-bottom: 8px;">
+        <li>Open <strong>/dashboard/labour</strong> &rarr; Click <strong>+ Onboard Technician</strong> &rarr; Enter: Name: <code>Mahesh Kumar</code>, Skill: <code>Machine Operator - Roaster Line</code>, Shift: <code>Morning (06:00-14:00)</code>, Wage: <code>Rs. 120/hr</code>. Save.</li>
+        <li>Open <strong>/dashboard/oee</strong> &rarr; Click <strong>+ Add Machine</strong> &rarr; Enter: Name: <code>Industrial Rotary Roaster #2</code>, Code: <code>MCH-ROAST-02</code>, Line: <code>Bay 3</code>, Rated Capacity: <code>150 kg/hr</code>. Save.</li>
+      </ol>
+      <div><span class="checkbox-box"></span><strong>Verified:</strong> Machine displays live OEE metrics; Technician appears in shift scheduling table.</div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span>Prodexa ERP v1.2.0 &bull; Confidential</span>
+    <span>Page 7 of 9</span>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- ==================== PAGE 8: EDGE CASES & COMPLIANCE ==================== -->
+  <div class="header-bar">
+    <span>Prodexa ERP &bull; UAT Testing Manual</span>
+    <span>Section 7: Edge Cases & System Integrity</span>
+  </div>
+
+  <h1>7. Edge Cases, Security & Compliance Checklist</h1>
+  <p>Stress-test validation boundaries, exception conditions, and regulatory compliance rules:</p>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">SEC-01: Zero Stock / Over-Fulfillment Blockage</span>
+      <span class="badge badge-red">Negative Test Case</span>
+    </div>
+    <div class="test-card-body">
+      <div class="test-grid">
+        <div class="tg-label">Action:</div>
+        <div class="tg-val">Attempt to generate a Delivery Challan for <code>500 PKT</code> when available free batch stock is only <code>100 PKT</code>.</div>
+        <div class="tg-label">Expected:</div>
+        <div class="tg-val">System blocks transaction with warning: <em>"Insufficient stock: requested 500 PKT exceeds available batch balance (100 PKT). Please plan a Work Order or PO."</em> Negative inventory is strictly prevented.</div>
+      </div>
+      <div style="margin-top: 6px;"><span class="checkbox-box"></span><strong>Pass / Fail:</strong> Stock validation barrier strictly enforced.</div>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">SEC-02: Expired Batch FEFO Blockage</span>
+      <span class="badge badge-red">Food Safety Compliance</span>
+    </div>
+    <div class="test-card-body">
+      <div class="test-grid">
+        <div class="tg-label">Action:</div>
+        <div class="tg-val">Create an inward batch with an expiry date set in the past (e.g. <code>10/10/2025</code>). Attempt to allocate this batch to an active Sales Order.</div>
+        <div class="tg-label">Expected:</div>
+        <div class="tg-val">FEFO allocation engine automatically excludes expired lot from eligible pick lists. Batch is flagged <code>EXPIRED</code> and quarantined to prevent contamination.</div>
+      </div>
+      <div style="margin-top: 6px;"><span class="checkbox-box"></span><strong>Pass / Fail:</strong> Expired lots prevented from order picking.</div>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">SEC-03: Role-Based Authorization Barriers</span>
+      <span class="badge badge-slate">Security Audit</span>
+    </div>
+    <div class="test-card-body">
+      <div class="test-grid">
+        <div class="tg-label">Action:</div>
+        <div class="tg-val">Log in as <code>sales@inventorypro.com</code> and attempt to access <code>/dashboard/finance</code> or approve a vendor payment voucher.</div>
+        <div class="tg-label">Expected:</div>
+        <div class="tg-val">Server returns <code>403 Forbidden</code> or redirects to unauthorized warning. Navigation menus restrict unauthorized action buttons.</div>
+      </div>
+      <div style="margin-top: 6px;"><span class="checkbox-box"></span><strong>Pass / Fail:</strong> Role permissions strictly gated.</div>
+    </div>
+  </div>
+
+  <div class="test-card">
+    <div class="test-card-header">
+      <span class="test-card-title">SEC-04: Network Fault-Tolerance & In-Memory Fallback</span>
+      <span class="badge badge-green">Reliability Test</span>
+    </div>
+    <div class="test-card-body">
+      <div class="test-grid">
+        <div class="tg-label">Action:</div>
+        <div class="tg-val">Trigger rapid customer/supplier creations or sales workflows even if cloud database connection experiences high latency or timeout.</div>
+        <div class="tg-label">Expected:</div>
+        <div class="tg-val">API routes seamlessly fall back to local in-memory mock stores, returning HTTP 200/201 responses without server crash (zero 500 error screens).</div>
+      </div>
+      <div style="margin-top: 6px;"><span class="checkbox-box"></span><strong>Pass / Fail:</strong> Seamless fallback operational.</div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span>Prodexa ERP v1.2.0 &bull; Confidential</span>
+    <span>Page 8 of 9</span>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- ==================== PAGE 9: DEFECT LOG & SIGN-OFF ==================== -->
+  <div class="header-bar">
+    <span>Prodexa ERP &bull; UAT Testing Manual</span>
+    <span>Section 8: Defect Logging & Sign-Off Matrix</span>
+  </div>
+
+  <h1>8. UAT Defect Logging & Formal Sign-Off</h1>
+  <p>Use the log below to record any anomalies observed during UAT execution, followed by formal departmental sign-off.</p>
+
+  <h2>UAT Incident & Defect Log</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 70px;">Defect #</th>
+        <th style="width: 90px;">Module</th>
+        <th>Description & Steps to Reproduce</th>
+        <th style="width: 80px;">Severity</th>
+        <th style="width: 90px;">Tester</th>
+        <th style="width: 80px;">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>BUG-01</code></td>
+        <td>Sales</td>
+        <td><em>Example: Customer search dropdown pagination limit...</em></td>
+        <td><span class="badge badge-amber">Medium</span></td>
+        <td>QA Tester</td>
+        <td><span class="badge badge-green">Closed</span></td>
+      </tr>
+      <tr>
+        <td style="height: 36px;"><code>BUG-02</code></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td style="height: 36px;"><code>BUG-03</code></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td style="height: 36px;"><code>BUG-04</code></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td style="height: 36px;"><code>BUG-05</code></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Departmental Acceptance & Sign-Off Matrix</h2>
+  <p>By signing below, department representatives confirm that the end-to-end workflows of Prodexa ERP meet operational requirements and business acceptance criteria.</p>
+
+  <table class="signoff-table">
+    <thead>
+      <tr>
+        <th>Stakeholder Role</th>
+        <th>Department Lead</th>
+        <th>Approval Verdict</th>
+        <th>Signature</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Sales & Commercial</strong></td>
+        <td>B2B Sales Head</td>
+        <td><span class="checkbox-box"></span> Accepted &bull; <span class="checkbox-box"></span> Conditional</td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><strong>Procurement & Stores</strong></td>
+        <td>Supply Chain Lead</td>
+        <td><span class="checkbox-box"></span> Accepted &bull; <span class="checkbox-box"></span> Conditional</td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><strong>Quality Assurance</strong></td>
+        <td>Quality Control Manager</td>
+        <td><span class="checkbox-box"></span> Accepted &bull; <span class="checkbox-box"></span> Conditional</td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><strong>Manufacturing Operations</strong></td>
+        <td>Plant & Operations Head</td>
+        <td><span class="checkbox-box"></span> Accepted &bull; <span class="checkbox-box"></span> Conditional</td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><strong>Finance & Accounting</strong></td>
+        <td>CFO / Finance Controller</td>
+        <td><span class="checkbox-box"></span> Accepted &bull; <span class="checkbox-box"></span> Conditional</td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><strong>QA Lead & ERP Delivery</strong></td>
+        <td>Lead QA Consultant</td>
+        <td><span class="checkbox-box"></span> Accepted &bull; <span class="checkbox-box"></span> Conditional</td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-green" style="margin-top: 20px;">
+    <div class="callout-icon">&#10004;</div>
+    <div>
+      <strong>UAT Completion Milestone:</strong> Upon collecting all signatures with zero Critical / High severity blockers, the Prodexa ERP build is certified production-ready for live deployment.
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span>Prodexa ERP v1.2.0 &bull; Confidential</span>
+    <span>Page 9 of 9</span>
+  </div>
+
+</body>
+</html>
+`;
+
+const publicDir = path.join(__dirname, '..', 'public');
+const docsDir = path.join(__dirname, '..', 'docs');
+const rootDir = path.join(__dirname, '..');
+
+if (!fs.existsSync(publicDir)) {
+  fs.mkdirSync(publicDir, { recursive: true });
+}
+if (!fs.existsSync(docsDir)) {
+  fs.mkdirSync(docsDir, { recursive: true });
+}
+
+const htmlPath = path.join(publicDir, 'uat-testing-guide.html');
+fs.writeFileSync(htmlPath, htmlContent, 'utf8');
+console.log('Saved HTML to:', htmlPath);
+
+const pdfPublicPath = path.join(publicDir, 'Prodexa_ERP_UAT_Workflow_Testing_Manual.pdf');
+const pdfRootPath = path.join(rootDir, 'Prodexa_ERP_UAT_Workflow_Testing_Manual.pdf');
+
+// Run Edge headless to compile PDF
+const edgePath = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
+
+console.log('Compiling PDF via Microsoft Edge Headless...');
+try {
+  const cmd = `"${edgePath}" --headless=new --disable-gpu --no-pdf-header-footer --print-to-pdf="${pdfPublicPath}" "${htmlPath}"`;
+  execSync(cmd, { stdio: 'inherit' });
+  
+  if (fs.existsSync(pdfPublicPath)) {
+    const stat = fs.statSync(pdfPublicPath);
+    console.log(`Success! PDF generated at: ${pdfPublicPath} (${(stat.size / 1024).toFixed(1)} KB)`);
+    // Copy to root as well
+    fs.copyFileSync(pdfPublicPath, pdfRootPath);
+    console.log(`Copied PDF to workspace root at: ${pdfRootPath}`);
+  } else {
+    console.error('PDF file was not created.');
+  }
+} catch (err) {
+  console.error('Failed to run Edge to generate PDF:', err.message);
+}

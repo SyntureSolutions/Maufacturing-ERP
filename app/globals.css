@@ -1,0 +1,565 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f4f6f8;
+  --foreground: #17212f;
+  --surface: #ffffff;
+  --line: #e2e7ed;
+  --muted: #667085;
+  --brand: #d97706;
+  --font-dm-sans: "DM Sans Variable", "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-bricolage: "Bricolage Grotesque Variable", "Bricolage Grotesque", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-geist-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+@layer base {
+  body {
+    @apply antialiased;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-dm-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+h1, h2, h3, .font-heading, .font-display {
+  font-family: var(--font-bricolage), var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ==================== ANIMATION KEYFRAMES ==================== */
+
+/* Blob floating */
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+.animate-blob { animation: blob 7s infinite; }
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
+
+/* Fade-in base */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
+
+/* Scroll Reveal - fade up */
+@keyframes scrollRevealUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scroll Reveal - fade left */
+@keyframes scrollRevealLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Scroll Reveal - fade right */
+@keyframes scrollRevealRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Scale pop */
+@keyframes scalePop {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.scroll-reveal-left.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.scroll-reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.scroll-reveal-right.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.scroll-reveal-scale {
+  opacity: 0;
+  transform: scale(0.85);
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.scroll-reveal-scale.revealed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Staggered children animation delays */
+.stagger-1 { transition-delay: 0.05s !important; }
+.stagger-2 { transition-delay: 0.1s !important; }
+.stagger-3 { transition-delay: 0.15s !important; }
+.stagger-4 { transition-delay: 0.2s !important; }
+.stagger-5 { transition-delay: 0.25s !important; }
+.stagger-6 { transition-delay: 0.3s !important; }
+
+/* ==================== MARQUEE / TICKER ==================== */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* ==================== ROTATING WORDS ==================== */
+@keyframes wordRotate {
+  0%, 18% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  22%, 28% {
+    opacity: 0;
+    transform: translateY(-110%);
+  }
+  32% {
+    opacity: 0;
+    transform: translateY(110%);
+  }
+  36%, 100% {
+    opacity: 0;
+    transform: translateY(110%);
+  }
+}
+
+/* ==================== GLOW PULSE ==================== */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.15); }
+  50% { box-shadow: 0 0 35px rgba(245, 158, 11, 0.3); }
+}
+.animate-glow-pulse {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+/* ==================== FLOAT ==================== */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* ==================== COUNTER TICK ==================== */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==================== SMOOTH SLIDE & CROSSFADE TRANSITIONS ==================== */
+@keyframes tabCrossfadeSlide {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-tab-crossfade {
+  animation: tabCrossfadeSlide 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes lineDraw {
+  from {
+    stroke-dashoffset: 500;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-line-draw {
+  stroke-dasharray: 500;
+  stroke-dashoffset: 500;
+  animation: lineDraw 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideInFromRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInFromLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.slide-in-right {
+  animation: slideInFromRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.slide-in-left {
+  animation: slideInFromLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ==================== CUSTOM SCROLLBAR ==================== */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
+}
+
+/* ==================== ENTERPRISE WORKSPACE (dashboard) ====================
+   Look and feel of a classic enterprise launchpad: dark shell bar and space bar, light grey canvas,
+   white panels, blue outlined toolbar buttons, underlined tabs, compact grid tables.
+   Everything below is scoped to the dashboard shell; the public site keeps its own styling. */
+:root {
+  --erp-font: "Segoe UI", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  --erp-shell: #354a5f;
+  --erp-canvas: #f7f7f7;
+  --erp-surface: #fff;
+  --erp-ink: #32363a;
+  --erp-muted: #6a6d70;
+  --erp-line: #e5e5e5;
+  --erp-field: #89919a;
+  --erp-accent: #0a6ed1;
+  --erp-accent-hover: #085caf;
+  --erp-accent-soft: #e5f0fa;
+  --erp-positive: #107e3e;
+  --erp-negative: #bb0000;
+  --erp-critical: #e9730c;
+  --erp-table-head: #f2f2f2;
+  --erp-panel-shadow: 0 0 0 1px rgba(0, 0, 0, .06), 0 1px 3px rgba(0, 0, 0, .08);
+}
+
+/* Older screens are built with Tailwind's amber accent and large radii; inside the shell those resolve to the
+   workspace blue and small corners, so every screen follows one look without per-page edits. */
+.erp-shell {
+  --color-amber-50: #eef5fc; --color-amber-100: #dbebfa; --color-amber-200: #b6d6f5; --color-amber-300: #86bbee;
+  --color-amber-400: #3f93e0; --color-amber-500: #0a6ed1; --color-amber-600: #085caf; --color-amber-700: #0854a0;
+  --color-amber-800: #074888; --color-amber-900: #063a6e; --color-amber-950: #04284c;
+  --radius-md: .25rem; --radius-lg: .25rem; --radius-xl: .25rem; --radius-2xl: .375rem; --radius-3xl: .5rem;
+  --font-sans: var(--erp-font);
+  background: var(--erp-canvas); color: var(--erp-ink); font-family: var(--erp-font); font-size: 14px;
+}
+.erp-shell h1, .erp-shell h2, .erp-shell h3, .erp-shell .font-heading, .erp-shell .font-display { font-family: var(--erp-font); }
+
+/* Shell bar */
+.shell-bar { display: flex; align-items: center; gap: .25rem; height: 44px; padding: 0 .5rem; background: var(--erp-shell); color: #fff; }
+.shell-icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: .25rem; color: #fff; }
+.shell-icon:hover { background: rgba(255, 255, 255, .12); }
+.shell-brand { display: flex; align-items: center; gap: .5rem; height: 36px; padding: 0 .5rem; border-radius: .25rem; font-size: 14px; font-weight: 700; color: #fff; white-space: nowrap; }
+.shell-brand:hover { background: rgba(255, 255, 255, .12); }
+.shell-divider { width: 1px; height: 20px; margin: 0 .5rem; background: rgba(255, 255, 255, .35); }
+.shell-title { min-width: 0; font-size: 14px; font-weight: 700; }
+.shell-search { display: flex; align-items: center; width: 22rem; height: 30px; padding-right: .5rem; border: 1px solid rgba(255, 255, 255, .35); border-radius: .25rem; background: rgba(255, 255, 255, .08); color: #fff; }
+.shell-search__scope { display: flex; align-items: center; height: 100%; padding: 0 .6rem; border-right: 1px solid rgba(255, 255, 255, .35); font-size: 12px; }
+.shell-search input { flex: 1; min-width: 0; height: 100%; padding: 0 .6rem; border: 0; outline: none; background: transparent; color: #fff; font-size: 13px; }
+.shell-search input::placeholder { color: rgba(255, 255, 255, .7); font-style: italic; }
+.shell-search:focus-within { background: #fff; color: var(--erp-ink); border-color: #fff; }
+.shell-search:focus-within input { color: var(--erp-ink); }
+.shell-search:focus-within .shell-search__scope { border-color: var(--erp-line); }
+.shell-avatar { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; margin: 0 .25rem; border: 2px solid transparent; border-radius: 999px; background: var(--erp-accent); color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
+.shell-avatar:hover { border-color: #fff; }
+.shell-popover { position: absolute; top: calc(100% + 4px); z-index: 90; max-height: 70vh; overflow-y: auto; padding: .25rem 0; border: 1px solid var(--erp-line); border-radius: .25rem; background: #fff; color: var(--erp-ink); box-shadow: 0 4px 16px rgba(0, 0, 0, .18); }
+.shell-popover__item { display: flex; align-items: center; gap: .6rem; width: 100%; padding: .55rem 1rem; font-size: 14px; color: var(--erp-ink); cursor: pointer; }
+.shell-popover__item:hover { background: #f5f5f5; }
+.shell-popover__item.is-current { color: var(--erp-accent); font-weight: 600; box-shadow: inset 3px 0 var(--erp-accent); }
+
+/* Space bar (hidden on small screens, where the side menu is used) */
+.space-bar { display: none; }
+@media (min-width: 768px) {
+  .space-bar { display: flex; align-items: stretch; height: 36px; padding: 0 1rem; background: var(--erp-shell); border-top: 1px solid rgba(255, 255, 255, .12); }
+}
+.space-bar__item { display: flex; align-items: center; gap: .3rem; height: 36px; padding: 0 .85rem; border-bottom: 3px solid transparent; color: #fff; font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer; }
+.space-bar__item:hover { background: rgba(255, 255, 255, .1); }
+.space-bar__item.is-active { border-bottom-color: #fff; }
+
+/* Side menu */
+.side-menu { position: absolute; top: 0; bottom: 0; left: 0; display: flex; flex-direction: column; width: 20rem; max-width: 85vw; overflow-y: auto; background: #fff; color: var(--erp-ink); box-shadow: 4px 0 16px rgba(0, 0, 0, .2); }
+.side-menu__item { display: flex; align-items: center; gap: .6rem; padding: .65rem 1rem; border-bottom: 1px solid #f0f0f0; font-size: 14px; color: var(--erp-ink); cursor: pointer; }
+.side-menu__item:hover { background: #f5f5f5; }
+.side-menu__item.is-current { color: var(--erp-accent); font-weight: 600; }
+.side-menu__heading { padding: .9rem 1rem .3rem; font-size: 12px; font-weight: 600; color: var(--erp-muted); }
+
+/* Message strips */
+.message-strip { padding: .5rem 1rem; border: 1px solid; border-radius: .25rem; font-size: 13px; color: var(--erp-ink); }
+.message-strip--info { background: var(--erp-accent-soft); border-color: #89bdee; }
+
+/* Content area */
+.erp-main { padding: 1rem 2rem 2rem; background: var(--erp-canvas); color: var(--erp-ink); }
+.erp-main > * { min-width: 0; }
+.erp-main h1 { font-size: 1.25rem; line-height: 1.3; font-weight: 400; letter-spacing: 0; color: var(--erp-ink); }
+.erp-main h2 { font-weight: 600; letter-spacing: 0; color: var(--erp-ink); }
+.erp-main h3 { letter-spacing: 0; }
+.erp-main p { text-wrap: pretty; }
+
+/* Panels: older screens' white rounded boxes become flat workspace panels */
+.erp-main [class*="bg-white"][class*="rounded-2xl"],
+.erp-main [class*="bg-white"][class*="rounded-3xl"],
+.erp-main [class*="bg-white"][class*="rounded-xl"] { border-color: var(--erp-line); border-radius: .25rem; box-shadow: var(--erp-panel-shadow); }
+.erp-main [class*="bg-white"][class*="shadow-2xl"] { box-shadow: 0 8px 32px rgba(0, 0, 0, .25); }
+
+/* Grid tables */
+.erp-main table { width: 100%; border-collapse: collapse; }
+.erp-main thead th { background-color: var(--erp-table-head); color: var(--erp-ink); font-size: 13px; font-weight: 400; letter-spacing: 0; text-transform: none; white-space: nowrap; }
+.erp-main th, .erp-main td { border-color: var(--erp-line); }
+.erp-main tbody tr { transition: background-color .1s ease; }
+.erp-main tbody tr:hover { background-color: #f5f5f5; }
+
+/* Fields */
+.erp-main input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.erp-main select,
+.erp-main textarea { border-radius: .125rem; border-color: var(--erp-field); box-shadow: none; }
+.erp-main input:not([type="checkbox"]):not([type="radio"]):hover,
+.erp-main select:hover, .erp-main textarea:hover { border-color: var(--erp-accent); }
+.erp-main input:focus, .erp-main select:focus, .erp-main textarea:focus { outline: 1px dotted var(--erp-ink); outline-offset: -4px; border-color: var(--erp-accent); }
+.erp-main input:disabled, .erp-main select:disabled, .erp-main textarea:disabled,
+.erp-main input[readonly] { background: #f2f2f2; border-color: #ccc; color: var(--erp-muted); }
+.erp-main input[type="checkbox"], .erp-main input[type="radio"] { accent-color: var(--erp-accent); }
+
+/* Buttons: amber-coloured buttons on older screens resolve to the workspace blue; keep their text readable */
+.erp-main button { transition-property: color, background-color, border-color, box-shadow; transition-duration: .1s; }
+.erp-main button:focus-visible, .erp-main a:focus-visible { outline: 1px dotted var(--erp-ink); outline-offset: 2px; }
+.erp-main button[class*="bg-amber-4"], .erp-main button[class*="bg-amber-5"], .erp-main button[class*="bg-amber-6"],
+.erp-main a[class*="bg-amber-4"], .erp-main a[class*="bg-amber-5"], .erp-main a[class*="bg-amber-6"] { color: #fff; }
+.erp-main button[class*="bg-amber-4"] svg, .erp-main button[class*="bg-amber-5"] svg, .erp-main a[class*="bg-amber-5"] svg { color: #fff; }
+
+@media (max-width: 767px) {
+  .erp-main { padding: 1rem; }
+}
+
+/* ==================== SHARED UI COMPONENTS ==================== */
+/* Built on the --erp-* tokens above. Declared in the components layer so Tailwind utilities can still override. */
+@layer components {
+  .ui-page { display: flex; flex-direction: column; gap: 1rem; }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* Page title area. As the first thing on a page it spans the full width as a white header panel. */
+  .page-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem 1rem; }
+  .page-header h1 { margin: 0; }
+  .page-header p { margin-top: .2rem; max-width: 80ch; font-size: 13px; line-height: 1.45; color: var(--erp-muted); }
+  .erp-main > .ui-page > .page-header:first-child,
+  .erp-main > .ui-page > :first-child:has(> .page-header) { margin: -1rem -2rem 0; padding: .9rem 2rem; background: #fff; border-bottom: 1px solid var(--erp-line); box-shadow: 0 1px 2px rgba(0, 0, 0, .05); }
+  @media (max-width: 767px) {
+    .erp-main > .ui-page > .page-header:first-child,
+    .erp-main > .ui-page > :first-child:has(> .page-header) { margin: -1rem -1rem 0; padding: .9rem 1rem; }
+  }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; height: 2rem; padding: 0 .75rem; border: 1px solid transparent; border-radius: .25rem; font-size: 14px; font-weight: 500; line-height: 1; white-space: nowrap; cursor: pointer; }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn-sm { height: 1.75rem; padding: 0 .6rem; font-size: 13px; }
+  /* emphasized */
+  .btn-primary, .btn-accent { background: var(--erp-accent); border-color: var(--erp-accent); color: #fff; }
+  .btn-primary:hover:not(:disabled), .btn-accent:hover:not(:disabled) { background: var(--erp-accent-hover); border-color: var(--erp-accent-hover); }
+  /* default toolbar button: white with a blue outline */
+  .btn-secondary { background: #fff; border-color: var(--erp-accent); color: var(--erp-accent); }
+  .btn-secondary:hover:not(:disabled) { background: #ebf5fe; }
+  .btn-success { background: var(--erp-positive); border-color: var(--erp-positive); color: #fff; }
+  .btn-success:hover:not(:disabled) { background: #0d6733; }
+  .btn-danger { background: #fff; border-color: var(--erp-negative); color: var(--erp-negative); }
+  .btn-danger:hover:not(:disabled) { background: #ffebeb; }
+  .btn-warn { background: #fff; border-color: var(--erp-critical); color: #b55a00; }
+  .btn-warn:hover:not(:disabled) { background: #fef3e6; }
+  /* transparent */
+  .btn-ghost { background: transparent; color: var(--erp-accent); }
+  .btn-ghost:hover:not(:disabled) { background: #ebf5fe; }
+
+  .input { width: 100%; height: 2rem; padding: 0 .6rem; border: 1px solid var(--erp-field); border-radius: .125rem; background: #fff; font-size: 14px; color: var(--erp-ink); }
+  textarea.input { height: auto; padding: .45rem .6rem; line-height: 1.45; }
+  .input::placeholder { color: #8c9196; font-style: italic; }
+  .input-auto { width: auto; }
+  .lbl { display: block; font-size: 13px; font-weight: 400; color: var(--erp-muted); }
+  .lbl > .input, .lbl > input, .lbl > select, .lbl > textarea { margin-top: .25rem; }
+
+  .card { background: #fff; border-radius: .25rem; padding: 1rem; box-shadow: var(--erp-panel-shadow); }
+  .table-wrap { overflow-x: auto; background: #fff; border-radius: .25rem; box-shadow: var(--erp-panel-shadow); }
+  .table-wrap th, .table-wrap td, .card table th, .card table td { padding: .45rem .65rem; border-bottom: 1px solid var(--erp-line); }
+  .table-wrap th + th, .table-wrap td + td { border-left: 1px solid var(--erp-line); }
+
+  /* Underlined tabs (icon tab bar); a row of tabs gets a white strip with a bottom rule */
+  .tab { display: inline-flex; align-items: center; height: 2.75rem; padding: 0 1rem; border: 0; border-bottom: 3px solid transparent; border-radius: 0; background: transparent; color: var(--erp-ink); font-size: 14px; font-weight: 400; white-space: nowrap; cursor: pointer; }
+  .tab:hover { color: var(--erp-accent); }
+  .tab-active, .tab-active:hover { color: var(--erp-accent); border-bottom-color: var(--erp-accent); font-weight: 600; background: transparent; }
+  .erp-main :where(div:has(> .tab)) { gap: 0; padding: 0 .5rem; background: #fff; border-bottom: 1px solid var(--erp-line); box-shadow: var(--erp-panel-shadow); overflow-x: auto; }
+
+  .badge { display: inline-flex; align-items: center; padding: .1rem .5rem; border-radius: .25rem; font-size: 12px; font-weight: 600; background: #f2f2f2; color: var(--erp-ink); }
+
+  .alert { display: flex; align-items: flex-start; gap: .5rem; padding: .5rem 1rem; border: 1px solid; border-radius: .25rem; font-size: 13px; line-height: 1.45; color: var(--erp-ink); }
+  .alert-ok { background: #f1fdf6; border-color: var(--erp-positive); }
+  .alert-ok > span:first-child { color: var(--erp-positive); font-weight: 700; }
+  .alert-err { background: #ffebeb; border-color: var(--erp-negative); }
+  .alert-err > span:first-child { color: var(--erp-negative); font-weight: 700; }
+
+  .modal-overlay { position: fixed; inset: 0; z-index: 70; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(0, 0, 0, .35); overflow-y: auto; }
+  .modal { background: #fff; border-radius: .25rem; padding: 1rem 1.25rem; box-shadow: 0 8px 32px rgba(0, 0, 0, .3); }
+  .modal h2 { margin: -1rem -1.25rem .75rem; padding: .75rem 1.25rem; border-bottom: 1px solid var(--erp-line); font-size: 1rem; font-weight: 600; }
+
+  .empty { padding: 2rem 1rem; border: 1px dashed #c4c4c4; border-radius: .25rem; background: #fff; text-align: center; font-size: 14px; color: var(--erp-muted); }
+
+  /* Object page: toolbar, header strip of key fields, collapsible sections, label: value forms */
+  .obj-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: -1rem -2rem 0; padding: .5rem 2rem; background: #fff; border-bottom: 1px solid var(--erp-line); }
+  .obj-header { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: .5rem 2rem; margin: 0 -2rem; padding: .75rem 2rem; background: #fff; border-bottom: 1px solid var(--erp-line); box-shadow: 0 1px 2px rgba(0, 0, 0, .05); }
+  .obj-header .field-row { grid-template-columns: auto minmax(0, 1fr); }
+  .obj-section { margin-top: 1rem; }
+  .obj-section__toggle { display: inline-flex; align-items: center; gap: .5rem; padding: .25rem 0; font-size: 14px; color: var(--erp-ink); cursor: pointer; }
+  .obj-section__toggle > span:first-child { display: inline-flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; border: 1px solid var(--erp-accent); border-radius: .25rem; color: var(--erp-accent); background: #fff; }
+  .obj-section__body { margin-top: .4rem; background: #fff; border-radius: .25rem; box-shadow: var(--erp-panel-shadow); }
+  .obj-tabs { display: flex; overflow-x: auto; padding: 0 .5rem; border-bottom: 1px solid var(--erp-line); }
+  .obj-tabs .tab { height: 2.5rem; }
+  .obj-pane { padding: 1rem 1.25rem; }
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr)); gap: .5rem 2.5rem; }
+  .field-row { display: grid; grid-template-columns: 11rem minmax(0, 1fr); align-items: center; gap: .75rem; min-height: 2rem; }
+  .field-row > label, .field-row > .field-label { justify-self: end; text-align: right; font-size: 13px; color: var(--erp-muted); }
+  .field-row > label::after, .field-row > .field-label::after { content: ":"; }
+  .field-value { display: flex; align-items: center; min-height: 1.75rem; padding: 0 .5rem; border: 1px solid #bfbfbf; border-radius: .125rem; background: #f2f2f2; font-size: 14px; color: var(--erp-ink); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .field-value--plain { border-color: transparent; background: transparent; padding: 0; }
+  .status-text { font-size: 13px; font-weight: 600; }
+  .status-text--positive { color: var(--erp-positive); } .status-text--negative { color: var(--erp-negative); }
+  .status-text--critical { color: var(--erp-critical); } .status-text--info { color: var(--erp-accent); }
+  @media (max-width: 767px) {
+    .obj-toolbar, .obj-header { margin-left: -1rem; margin-right: -1rem; padding-left: 1rem; padding-right: 1rem; }
+    .field-row { grid-template-columns: 8rem minmax(0, 1fr); }
+  }
+
+  /* Launchpad */
+  .launchpad-section { margin-top: 1.25rem; }
+  .launchpad-section > h2 { margin-bottom: .6rem; font-size: 1rem; font-weight: 600; }
+  /* Tiles are landscape (about 2:1) and sit on a grid of equal columns. Launchpad.tsx adds .is-balanced and --cols so the last row is not left with one or two orphans. */
+  .launchpad-tiles { display: grid; gap: .75rem; justify-content: start; grid-template-columns: repeat(auto-fill, minmax(12.5rem, 14.5rem)); }
+  .launchpad-tiles.is-balanced { grid-template-columns: repeat(var(--cols), minmax(0, 14.5rem)); }
+  .tile { position: relative; display: flex; flex-direction: row; align-items: flex-start; justify-content: space-between; gap: .75rem; min-height: 6.5rem; padding: .9rem 1rem; border-radius: .25rem; background: #fff; box-shadow: var(--erp-panel-shadow); color: var(--erp-ink); transition: box-shadow .1s ease; }
+  .tile:hover { box-shadow: 0 0 0 1px rgba(0, 0, 0, .1), 0 4px 12px rgba(0, 0, 0, .15); }
+  .tile:focus-visible { outline: 1px dotted var(--erp-ink); outline-offset: -4px; }
+  .tile__text { display: flex; min-width: 0; flex-direction: column; }
+  .tile__title { font-size: 14px; font-weight: 500; line-height: 1.3; }
+  .tile__subtitle { margin-top: .25rem; font-size: 12px; line-height: 1.3; color: var(--erp-muted); }
+  .tile__icon { flex-shrink: 0; width: 1.75rem; height: 1.75rem; color: var(--erp-accent); }
+  @media (max-width: 767px) { .launchpad-tiles, .launchpad-tiles.is-balanced { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; } .tile { min-height: 5.5rem; padding: .75rem; } }
+}
+
+/* Title inside a wrapper after a print-only <style> (CRM, Dispatch, Job Work, Labels, Financial Reports).
+   Unlayered: the wrapper's space-y utility would otherwise win over the margins. */
+.erp-main > .ui-page > style:first-child + div > .page-header:first-child { margin: -1rem -2rem 1rem; padding: .9rem 2rem; background: #fff; border-bottom: 1px solid var(--erp-line); box-shadow: 0 1px 2px rgba(0, 0, 0, .05); }
+@media (max-width: 767px) { .erp-main > .ui-page > style:first-child + div > .page-header:first-child { margin: -1rem -1rem 1rem; padding: .9rem 1rem; } }
+
+/* ==================== CONSISTENCY OVERRIDES FOR OLDER SCREENS ==================== */
+/* Unlayered on purpose: these must beat per-page utility classes on screens that predate the shared components. */
+.erp-main .font-mono { font-family: var(--erp-font); font-variant-numeric: tabular-nums; }
+/* Older screens title themselves with a large h2; give it the workspace title size and put the title row in the header panel */
+.erp-main :is(h1, h2).text-3xl, .erp-main :is(h1, h2).text-2xl { font-size: 1.25rem; line-height: 1.3; font-weight: 400; letter-spacing: 0; }
+.erp-main > div > div:first-child:has(:is(h1, h2).text-3xl, :is(h1, h2).text-2xl):not(.ui-page *) { margin: -1rem -2rem 1rem; padding: .9rem 2rem; background: #fff; border: 0; border-bottom: 1px solid var(--erp-line); border-radius: 0; box-shadow: 0 1px 2px rgba(0, 0, 0, .05); }
+@media (max-width: 767px) { .erp-main > div > div:first-child:has(:is(h1, h2).text-3xl, :is(h1, h2).text-2xl):not(.ui-page *) { margin: -1rem -1rem 1rem; padding: .9rem 1rem; } }
+.erp-main button:not([class*="whitespace-"]):not([class*="text-left"]), .erp-main a[class*="rounded"]:not([class*="whitespace-"]):not([class*="text-left"]) { white-space: nowrap; }
+
+/* Older screens: solid-colour KPI cards and dark banners become white workspace panels (generated by scripts/generate-workspace-panels.py; edit the script, not these lines). */
+.erp-main :is(div, section, article, header):is([class^="p-"], [class*=" p-"], [class^="px-"], [class*=" px-"], [class^="py-"], [class*=" py-"]):not([class*="rounded-full"]):not([class*="fixed"]):is([class~="bg-slate-800"], [class~="bg-slate-900"], [class~="bg-slate-950"], [class~="bg-gray-800"], [class~="bg-gray-900"], [class~="bg-gray-950"], [class~="bg-black"], [class*="bg-gradient-to-"], [class~="bg-rose-500"], [class~="bg-rose-600"], [class~="bg-rose-700"], [class~="bg-rose-800"], [class~="bg-rose-900"], [class~="bg-red-500"], [class~="bg-red-600"], [class~="bg-red-700"], [class~="bg-red-800"], [class~="bg-red-900"], [class~="bg-emerald-500"], [class~="bg-emerald-600"], [class~="bg-emerald-700"], [class~="bg-emerald-800"], [class~="bg-emerald-900"], [class~="bg-green-500"], [class~="bg-green-600"], [class~="bg-green-700"], [class~="bg-green-800"], [class~="bg-green-900"], [class~="bg-teal-500"], [class~="bg-teal-600"], [class~="bg-teal-700"], [class~="bg-teal-800"], [class~="bg-teal-900"], [class~="bg-indigo-500"], [class~="bg-indigo-600"], [class~="bg-indigo-700"], [class~="bg-indigo-800"], [class~="bg-indigo-900"], [class~="bg-violet-500"], [class~="bg-violet-600"], [class~="bg-violet-700"], [class~="bg-violet-800"], [class~="bg-violet-900"], [class~="bg-purple-500"], [class~="bg-purple-600"], [class~="bg-purple-700"], [class~="bg-purple-800"], [class~="bg-purple-900"], [class~="bg-blue-500"], [class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-blue-800"], [class~="bg-blue-900"], [class~="bg-sky-500"], [class~="bg-sky-600"], [class~="bg-sky-700"], [class~="bg-sky-800"], [class~="bg-sky-900"], [class~="bg-cyan-500"], [class~="bg-cyan-600"], [class~="bg-cyan-700"], [class~="bg-cyan-800"], [class~="bg-cyan-900"], [class~="bg-fuchsia-500"], [class~="bg-fuchsia-600"], [class~="bg-fuchsia-700"], [class~="bg-fuchsia-800"], [class~="bg-fuchsia-900"], [class~="bg-pink-500"], [class~="bg-pink-600"], [class~="bg-pink-700"], [class~="bg-pink-800"], [class~="bg-pink-900"], [class~="bg-amber-500"], [class~="bg-amber-600"], [class~="bg-amber-700"], [class~="bg-amber-800"], [class~="bg-amber-900"], [class~="bg-orange-500"], [class~="bg-orange-600"], [class~="bg-orange-700"], [class~="bg-orange-800"], [class~="bg-orange-900"], [class~="bg-yellow-500"], [class~="bg-yellow-600"], [class~="bg-yellow-700"], [class~="bg-yellow-800"], [class~="bg-yellow-900"]) { background: #fff; background-image: none; color: var(--erp-ink); border: 0; border-radius: .25rem; box-shadow: var(--erp-panel-shadow); }
+.erp-main :is(div, section, article, header):is([class^="p-"], [class*=" p-"], [class^="px-"], [class*=" px-"], [class^="py-"], [class*=" py-"]):not([class*="rounded-full"]):not([class*="fixed"]):is([class~="bg-rose-500"], [class~="bg-rose-600"], [class~="bg-rose-700"], [class~="bg-rose-800"], [class~="bg-rose-900"], [class~="bg-red-500"], [class~="bg-red-600"], [class~="bg-red-700"], [class~="bg-red-800"], [class~="bg-red-900"]) { box-shadow: inset 4px 0 var(--erp-negative), var(--erp-panel-shadow); }
+.erp-main :is(div, section, article, header):is([class^="p-"], [class*=" p-"], [class^="px-"], [class*=" px-"], [class^="py-"], [class*=" py-"]):not([class*="rounded-full"]):not([class*="fixed"]):is([class~="bg-emerald-500"], [class~="bg-emerald-600"], [class~="bg-emerald-700"], [class~="bg-emerald-800"], [class~="bg-emerald-900"], [class~="bg-green-500"], [class~="bg-green-600"], [class~="bg-green-700"], [class~="bg-green-800"], [class~="bg-green-900"], [class~="bg-teal-500"], [class~="bg-teal-600"], [class~="bg-teal-700"], [class~="bg-teal-800"], [class~="bg-teal-900"]) { box-shadow: inset 4px 0 var(--erp-positive), var(--erp-panel-shadow); }
+.erp-main :is(div, section, article, header):is([class^="p-"], [class*=" p-"], [class^="px-"], [class*=" px-"], [class^="py-"], [class*=" py-"]):not([class*="rounded-full"]):not([class*="fixed"]):is([class~="bg-indigo-500"], [class~="bg-indigo-600"], [class~="bg-indigo-700"], [class~="bg-indigo-800"], [class~="bg-indigo-900"], [class~="bg-violet-500"], [class~="bg-violet-600"], [class~="bg-violet-700"], [class~="bg-violet-800"], [class~="bg-violet-900"], [class~="bg-purple-500"], [class~="bg-purple-600"], [class~="bg-purple-700"], [class~="bg-purple-800"], [class~="bg-purple-900"], [class~="bg-blue-500"], [class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-blue-800"], [class~="bg-blue-900"], [class~="bg-sky-500"], [class~="bg-sky-600"], [class~="bg-sky-700"], [class~="bg-sky-800"], [class~="bg-sky-900"], [class~="bg-cyan-500"], [class~="bg-cyan-600"], [class~="bg-cyan-700"], [class~="bg-cyan-800"], [class~="bg-cyan-900"], [class~="bg-fuchsia-500"], [class~="bg-fuchsia-600"], [class~="bg-fuchsia-700"], [class~="bg-fuchsia-800"], [class~="bg-fuchsia-900"], [class~="bg-pink-500"], [class~="bg-pink-600"], [class~="bg-pink-700"], [class~="bg-pink-800"], [class~="bg-pink-900"], [class~="bg-amber-500"], [class~="bg-amber-600"], [class~="bg-amber-700"], [class~="bg-amber-800"], [class~="bg-amber-900"]) { box-shadow: inset 4px 0 var(--erp-accent), var(--erp-panel-shadow); }
+.erp-main :is(div, section, article, header):is([class^="p-"], [class*=" p-"], [class^="px-"], [class*=" px-"], [class^="py-"], [class*=" py-"]):not([class*="rounded-full"]):not([class*="fixed"]):is([class~="bg-orange-500"], [class~="bg-orange-600"], [class~="bg-orange-700"], [class~="bg-orange-800"], [class~="bg-orange-900"], [class~="bg-yellow-500"], [class~="bg-yellow-600"], [class~="bg-yellow-700"], [class~="bg-yellow-800"], [class~="bg-yellow-900"]) { box-shadow: inset 4px 0 var(--erp-critical), var(--erp-panel-shadow); }
+.erp-main :is(div, section, article, header):is([class^="p-"], [class*=" p-"], [class^="px-"], [class*=" px-"], [class^="py-"], [class*=" py-"]):not([class*="rounded-full"]):not([class*="fixed"]):is([class~="bg-slate-800"], [class~="bg-slate-900"], [class~="bg-slate-950"], [class~="bg-gray-800"], [class~="bg-gray-900"], [class~="bg-gray-950"], [class~="bg-black"], [class*="bg-gradient-to-"], [class~="bg-rose-500"], [class~="bg-rose-600"], [class~="bg-rose-700"], [class~="bg-rose-800"], [class~="bg-rose-900"], [class~="bg-red-500"], [class~="bg-red-600"], [class~="bg-red-700"], [class~="bg-red-800"], [class~="bg-red-900"], [class~="bg-emerald-500"], [class~="bg-emerald-600"], [class~="bg-emerald-700"], [class~="bg-emerald-800"], [class~="bg-emerald-900"], [class~="bg-green-500"], [class~="bg-green-600"], [class~="bg-green-700"], [class~="bg-green-800"], [class~="bg-green-900"], [class~="bg-teal-500"], [class~="bg-teal-600"], [class~="bg-teal-700"], [class~="bg-teal-800"], [class~="bg-teal-900"], [class~="bg-indigo-500"], [class~="bg-indigo-600"], [class~="bg-indigo-700"], [class~="bg-indigo-800"], [class~="bg-indigo-900"], [class~="bg-violet-500"], [class~="bg-violet-600"], [class~="bg-violet-700"], [class~="bg-violet-800"], [class~="bg-violet-900"], [class~="bg-purple-500"], [class~="bg-purple-600"], [class~="bg-purple-700"], [class~="bg-purple-800"], [class~="bg-purple-900"], [class~="bg-blue-500"], [class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-blue-800"], [class~="bg-blue-900"], [class~="bg-sky-500"], [class~="bg-sky-600"], [class~="bg-sky-700"], [class~="bg-sky-800"], [class~="bg-sky-900"], [class~="bg-cyan-500"], [class~="bg-cyan-600"], [class~="bg-cyan-700"], [class~="bg-cyan-800"], [class~="bg-cyan-900"], [class~="bg-fuchsia-500"], [class~="bg-fuchsia-600"], [class~="bg-fuchsia-700"], [class~="bg-fuchsia-800"], [class~="bg-fuchsia-900"], [class~="bg-pink-500"], [class~="bg-pink-600"], [class~="bg-pink-700"], [class~="bg-pink-800"], [class~="bg-pink-900"], [class~="bg-amber-500"], [class~="bg-amber-600"], [class~="bg-amber-700"], [class~="bg-amber-800"], [class~="bg-amber-900"], [class~="bg-orange-500"], [class~="bg-orange-600"], [class~="bg-orange-700"], [class~="bg-orange-800"], [class~="bg-orange-900"], [class~="bg-yellow-500"], [class~="bg-yellow-600"], [class~="bg-yellow-700"], [class~="bg-yellow-800"], [class~="bg-yellow-900"]) :is(.text-white, [class*="text-white/"], .text-slate-50, .text-slate-100):not([class*="bg-"]):not(button *):not(a *):not(button):not(a), .erp-main :is(div, section, article, header):is([class^="p-"], [class*=" p-"], [class^="px-"], [class*=" px-"], [class^="py-"], [class*=" py-"]):not([class*="rounded-full"]):not([class*="fixed"]):is([class~="bg-slate-800"], [class~="bg-slate-900"], [class~="bg-slate-950"], [class~="bg-gray-800"], [class~="bg-gray-900"], [class~="bg-gray-950"], [class~="bg-black"], [class*="bg-gradient-to-"], [class~="bg-rose-500"], [class~="bg-rose-600"], [class~="bg-rose-700"], [class~="bg-rose-800"], [class~="bg-rose-900"], [class~="bg-red-500"], [class~="bg-red-600"], [class~="bg-red-700"], [class~="bg-red-800"], [class~="bg-red-900"], [class~="bg-emerald-500"], [class~="bg-emerald-600"], [class~="bg-emerald-700"], [class~="bg-emerald-800"], [class~="bg-emerald-900"], [class~="bg-green-500"], [class~="bg-green-600"], [class~="bg-green-700"], [class~="bg-green-800"], [class~="bg-green-900"], [class~="bg-teal-500"], [class~="bg-teal-600"], [class~="bg-teal-700"], [class~="bg-teal-800"], [class~="bg-teal-900"], [class~="bg-indigo-500"], [class~="bg-indigo-600"], [class~="bg-indigo-700"], [class~="bg-indigo-800"], [class~="bg-indigo-900"], [class~="bg-violet-500"], [class~="bg-violet-600"], [class~="bg-violet-700"], [class~="bg-violet-800"], [class~="bg-violet-900"], [class~="bg-purple-500"], [class~="bg-purple-600"], [class~="bg-purple-700"], [class~="bg-purple-800"], [class~="bg-purple-900"], [class~="bg-blue-500"], [class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-blue-800"], [class~="bg-blue-900"], [class~="bg-sky-500"], [class~="bg-sky-600"], [class~="bg-sky-700"], [class~="bg-sky-800"], [class~="bg-sky-900"], [class~="bg-cyan-500"], [class~="bg-cyan-600"], [class~="bg-cyan-700"], [class~="bg-cyan-800"], [class~="bg-cyan-900"], [class~="bg-fuchsia-500"], [class~="bg-fuchsia-600"], [class~="bg-fuchsia-700"], [class~="bg-fuchsia-800"], [class~="bg-fuchsia-900"], [class~="bg-pink-500"], [class~="bg-pink-600"], [class~="bg-pink-700"], [class~="bg-pink-800"], [class~="bg-pink-900"], [class~="bg-amber-500"], [class~="bg-amber-600"], [class~="bg-amber-700"], [class~="bg-amber-800"], [class~="bg-amber-900"], [class~="bg-orange-500"], [class~="bg-orange-600"], [class~="bg-orange-700"], [class~="bg-orange-800"], [class~="bg-orange-900"], [class~="bg-yellow-500"], [class~="bg-yellow-600"], [class~="bg-yellow-700"], [class~="bg-yellow-800"], [class~="bg-yellow-900"]):is(.text-white, [class*="text-white/"]) { color: var(--erp-ink); }
+.erp-main :is(div, section, article, header):is([class^="p-"], [class*=" p-"], [class^="px-"], [class*=" px-"], [class^="py-"], [class*=" py-"]):not([class*="rounded-full"]):not([class*="fixed"]):is([class~="bg-slate-800"], [class~="bg-slate-900"], [class~="bg-slate-950"], [class~="bg-gray-800"], [class~="bg-gray-900"], [class~="bg-gray-950"], [class~="bg-black"], [class*="bg-gradient-to-"], [class~="bg-rose-500"], [class~="bg-rose-600"], [class~="bg-rose-700"], [class~="bg-rose-800"], [class~="bg-rose-900"], [class~="bg-red-500"], [class~="bg-red-600"], [class~="bg-red-700"], [class~="bg-red-800"], [class~="bg-red-900"], [class~="bg-emerald-500"], [class~="bg-emerald-600"], [class~="bg-emerald-700"], [class~="bg-emerald-800"], [class~="bg-emerald-900"], [class~="bg-green-500"], [class~="bg-green-600"], [class~="bg-green-700"], [class~="bg-green-800"], [class~="bg-green-900"], [class~="bg-teal-500"], [class~="bg-teal-600"], [class~="bg-teal-700"], [class~="bg-teal-800"], [class~="bg-teal-900"], [class~="bg-indigo-500"], [class~="bg-indigo-600"], [class~="bg-indigo-700"], [class~="bg-indigo-800"], [class~="bg-indigo-900"], [class~="bg-violet-500"], [class~="bg-violet-600"], [class~="bg-violet-700"], [class~="bg-violet-800"], [class~="bg-violet-900"], [class~="bg-purple-500"], [class~="bg-purple-600"], [class~="bg-purple-700"], [class~="bg-purple-800"], [class~="bg-purple-900"], [class~="bg-blue-500"], [class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-blue-800"], [class~="bg-blue-900"], [class~="bg-sky-500"], [class~="bg-sky-600"], [class~="bg-sky-700"], [class~="bg-sky-800"], [class~="bg-sky-900"], [class~="bg-cyan-500"], [class~="bg-cyan-600"], [class~="bg-cyan-700"], [class~="bg-cyan-800"], [class~="bg-cyan-900"], [class~="bg-fuchsia-500"], [class~="bg-fuchsia-600"], [class~="bg-fuchsia-700"], [class~="bg-fuchsia-800"], [class~="bg-fuchsia-900"], [class~="bg-pink-500"], [class~="bg-pink-600"], [class~="bg-pink-700"], [class~="bg-pink-800"], [class~="bg-pink-900"], [class~="bg-amber-500"], [class~="bg-amber-600"], [class~="bg-amber-700"], [class~="bg-amber-800"], [class~="bg-amber-900"], [class~="bg-orange-500"], [class~="bg-orange-600"], [class~="bg-orange-700"], [class~="bg-orange-800"], [class~="bg-orange-900"], [class~="bg-yellow-500"], [class~="bg-yellow-600"], [class~="bg-yellow-700"], [class~="bg-yellow-800"], [class~="bg-yellow-900"]) :is(.text-slate-200, .text-slate-300, .text-slate-400, .text-gray-300, .text-gray-400) { color: var(--erp-muted); }
+.erp-main :is(div, section, article, header):is([class^="p-"], [class*=" p-"], [class^="px-"], [class*=" px-"], [class^="py-"], [class*=" py-"]):not([class*="rounded-full"]):not([class*="fixed"]):is([class~="bg-slate-800"], [class~="bg-slate-900"], [class~="bg-slate-950"], [class~="bg-gray-800"], [class~="bg-gray-900"], [class~="bg-gray-950"], [class~="bg-black"], [class*="bg-gradient-to-"], [class~="bg-rose-500"], [class~="bg-rose-600"], [class~="bg-rose-700"], [class~="bg-rose-800"], [class~="bg-rose-900"], [class~="bg-red-500"], [class~="bg-red-600"], [class~="bg-red-700"], [class~="bg-red-800"], [class~="bg-red-900"], [class~="bg-emerald-500"], [class~="bg-emerald-600"], [class~="bg-emerald-700"], [class~="bg-emerald-800"], [class~="bg-emerald-900"], [class~="bg-green-500"], [class~="bg-green-600"], [class~="bg-green-700"], [class~="bg-green-800"], [class~="bg-green-900"], [class~="bg-teal-500"], [class~="bg-teal-600"], [class~="bg-teal-700"], [class~="bg-teal-800"], [class~="bg-teal-900"], [class~="bg-indigo-500"], [class~="bg-indigo-600"], [class~="bg-indigo-700"], [class~="bg-indigo-800"], [class~="bg-indigo-900"], [class~="bg-violet-500"], [class~="bg-violet-600"], [class~="bg-violet-700"], [class~="bg-violet-800"], [class~="bg-violet-900"], [class~="bg-purple-500"], [class~="bg-purple-600"], [class~="bg-purple-700"], [class~="bg-purple-800"], [class~="bg-purple-900"], [class~="bg-blue-500"], [class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-blue-800"], [class~="bg-blue-900"], [class~="bg-sky-500"], [class~="bg-sky-600"], [class~="bg-sky-700"], [class~="bg-sky-800"], [class~="bg-sky-900"], [class~="bg-cyan-500"], [class~="bg-cyan-600"], [class~="bg-cyan-700"], [class~="bg-cyan-800"], [class~="bg-cyan-900"], [class~="bg-fuchsia-500"], [class~="bg-fuchsia-600"], [class~="bg-fuchsia-700"], [class~="bg-fuchsia-800"], [class~="bg-fuchsia-900"], [class~="bg-pink-500"], [class~="bg-pink-600"], [class~="bg-pink-700"], [class~="bg-pink-800"], [class~="bg-pink-900"], [class~="bg-amber-500"], [class~="bg-amber-600"], [class~="bg-amber-700"], [class~="bg-amber-800"], [class~="bg-amber-900"], [class~="bg-orange-500"], [class~="bg-orange-600"], [class~="bg-orange-700"], [class~="bg-orange-800"], [class~="bg-orange-900"], [class~="bg-yellow-500"], [class~="bg-yellow-600"], [class~="bg-yellow-700"], [class~="bg-yellow-800"], [class~="bg-yellow-900"]) :is(.text-rose-100, .text-rose-200, .text-rose-300, .text-rose-400, .text-red-100, .text-red-200, .text-red-300, .text-red-400) { color: var(--erp-negative); }
+.erp-main :is(div, section, article, header):is([class^="p-"], [class*=" p-"], [class^="px-"], [class*=" px-"], [class^="py-"], [class*=" py-"]):not([class*="rounded-full"]):not([class*="fixed"]):is([class~="bg-slate-800"], [class~="bg-slate-900"], [class~="bg-slate-950"], [class~="bg-gray-800"], [class~="bg-gray-900"], [class~="bg-gray-950"], [class~="bg-black"], [class*="bg-gradient-to-"], [class~="bg-rose-500"], [class~="bg-rose-600"], [class~="bg-rose-700"], [class~="bg-rose-800"], [class~="bg-rose-900"], [class~="bg-red-500"], [class~="bg-red-600"], [class~="bg-red-700"], [class~="bg-red-800"], [class~="bg-red-900"], [class~="bg-emerald-500"], [class~="bg-emerald-600"], [class~="bg-emerald-700"], [class~="bg-emerald-800"], [class~="bg-emerald-900"], [class~="bg-green-500"], [class~="bg-green-600"], [class~="bg-green-700"], [class~="bg-green-800"], [class~="bg-green-900"], [class~="bg-teal-500"], [class~="bg-teal-600"], [class~="bg-teal-700"], [class~="bg-teal-800"], [class~="bg-teal-900"], [class~="bg-indigo-500"], [class~="bg-indigo-600"], [class~="bg-indigo-700"], [class~="bg-indigo-800"], [class~="bg-indigo-900"], [class~="bg-violet-500"], [class~="bg-violet-600"], [class~="bg-violet-700"], [class~="bg-violet-800"], [class~="bg-violet-900"], [class~="bg-purple-500"], [class~="bg-purple-600"], [class~="bg-purple-700"], [class~="bg-purple-800"], [class~="bg-purple-900"], [class~="bg-blue-500"], [class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-blue-800"], [class~="bg-blue-900"], [class~="bg-sky-500"], [class~="bg-sky-600"], [class~="bg-sky-700"], [class~="bg-sky-800"], [class~="bg-sky-900"], [class~="bg-cyan-500"], [class~="bg-cyan-600"], [class~="bg-cyan-700"], [class~="bg-cyan-800"], [class~="bg-cyan-900"], [class~="bg-fuchsia-500"], [class~="bg-fuchsia-600"], [class~="bg-fuchsia-700"], [class~="bg-fuchsia-800"], [class~="bg-fuchsia-900"], [class~="bg-pink-500"], [class~="bg-pink-600"], [class~="bg-pink-700"], [class~="bg-pink-800"], [class~="bg-pink-900"], [class~="bg-amber-500"], [class~="bg-amber-600"], [class~="bg-amber-700"], [class~="bg-amber-800"], [class~="bg-amber-900"], [class~="bg-orange-500"], [class~="bg-orange-600"], [class~="bg-orange-700"], [class~="bg-orange-800"], [class~="bg-orange-900"], [class~="bg-yellow-500"], [class~="bg-yellow-600"], [class~="bg-yellow-700"], [class~="bg-yellow-800"], [class~="bg-yellow-900"]) :is(.text-emerald-100, .text-emerald-200, .text-emerald-300, .text-emerald-400, .text-green-100, .text-green-200, .text-green-300, .text-green-400, .text-teal-100, .text-teal-200, .text-teal-300, .text-teal-400) { color: var(--erp-positive); }
+.erp-main :is(div, section, article, header):is([class^="p-"], [class*=" p-"], [class^="px-"], [class*=" px-"], [class^="py-"], [class*=" py-"]):not([class*="rounded-full"]):not([class*="fixed"]):is([class~="bg-slate-800"], [class~="bg-slate-900"], [class~="bg-slate-950"], [class~="bg-gray-800"], [class~="bg-gray-900"], [class~="bg-gray-950"], [class~="bg-black"], [class*="bg-gradient-to-"], [class~="bg-rose-500"], [class~="bg-rose-600"], [class~="bg-rose-700"], [class~="bg-rose-800"], [class~="bg-rose-900"], [class~="bg-red-500"], [class~="bg-red-600"], [class~="bg-red-700"], [class~="bg-red-800"], [class~="bg-red-900"], [class~="bg-emerald-500"], [class~="bg-emerald-600"], [class~="bg-emerald-700"], [class~="bg-emerald-800"], [class~="bg-emerald-900"], [class~="bg-green-500"], [class~="bg-green-600"], [class~="bg-green-700"], [class~="bg-green-800"], [class~="bg-green-900"], [class~="bg-teal-500"], [class~="bg-teal-600"], [class~="bg-teal-700"], [class~="bg-teal-800"], [class~="bg-teal-900"], [class~="bg-indigo-500"], [class~="bg-indigo-600"], [class~="bg-indigo-700"], [class~="bg-indigo-800"], [class~="bg-indigo-900"], [class~="bg-violet-500"], [class~="bg-violet-600"], [class~="bg-violet-700"], [class~="bg-violet-800"], [class~="bg-violet-900"], [class~="bg-purple-500"], [class~="bg-purple-600"], [class~="bg-purple-700"], [class~="bg-purple-800"], [class~="bg-purple-900"], [class~="bg-blue-500"], [class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-blue-800"], [class~="bg-blue-900"], [class~="bg-sky-500"], [class~="bg-sky-600"], [class~="bg-sky-700"], [class~="bg-sky-800"], [class~="bg-sky-900"], [class~="bg-cyan-500"], [class~="bg-cyan-600"], [class~="bg-cyan-700"], [class~="bg-cyan-800"], [class~="bg-cyan-900"], [class~="bg-fuchsia-500"], [class~="bg-fuchsia-600"], [class~="bg-fuchsia-700"], [class~="bg-fuchsia-800"], [class~="bg-fuchsia-900"], [class~="bg-pink-500"], [class~="bg-pink-600"], [class~="bg-pink-700"], [class~="bg-pink-800"], [class~="bg-pink-900"], [class~="bg-amber-500"], [class~="bg-amber-600"], [class~="bg-amber-700"], [class~="bg-amber-800"], [class~="bg-amber-900"], [class~="bg-orange-500"], [class~="bg-orange-600"], [class~="bg-orange-700"], [class~="bg-orange-800"], [class~="bg-orange-900"], [class~="bg-yellow-500"], [class~="bg-yellow-600"], [class~="bg-yellow-700"], [class~="bg-yellow-800"], [class~="bg-yellow-900"]) :is(.text-indigo-100, .text-indigo-200, .text-indigo-300, .text-indigo-400, .text-violet-100, .text-violet-200, .text-violet-300, .text-violet-400, .text-purple-100, .text-purple-200, .text-purple-300, .text-purple-400, .text-blue-100, .text-blue-200, .text-blue-300, .text-blue-400, .text-sky-100, .text-sky-200, .text-sky-300, .text-sky-400, .text-cyan-100, .text-cyan-200, .text-cyan-300, .text-cyan-400, .text-fuchsia-100, .text-fuchsia-200, .text-fuchsia-300, .text-fuchsia-400, .text-pink-100, .text-pink-200, .text-pink-300, .text-pink-400, .text-amber-100, .text-amber-200, .text-amber-300, .text-amber-400) { color: var(--erp-accent); }
+.erp-main :is(div, section, article, header):is([class^="p-"], [class*=" p-"], [class^="px-"], [class*=" px-"], [class^="py-"], [class*=" py-"]):not([class*="rounded-full"]):not([class*="fixed"]):is([class~="bg-slate-800"], [class~="bg-slate-900"], [class~="bg-slate-950"], [class~="bg-gray-800"], [class~="bg-gray-900"], [class~="bg-gray-950"], [class~="bg-black"], [class*="bg-gradient-to-"], [class~="bg-rose-500"], [class~="bg-rose-600"], [class~="bg-rose-700"], [class~="bg-rose-800"], [class~="bg-rose-900"], [class~="bg-red-500"], [class~="bg-red-600"], [class~="bg-red-700"], [class~="bg-red-800"], [class~="bg-red-900"], [class~="bg-emerald-500"], [class~="bg-emerald-600"], [class~="bg-emerald-700"], [class~="bg-emerald-800"], [class~="bg-emerald-900"], [class~="bg-green-500"], [class~="bg-green-600"], [class~="bg-green-700"], [class~="bg-green-800"], [class~="bg-green-900"], [class~="bg-teal-500"], [class~="bg-teal-600"], [class~="bg-teal-700"], [class~="bg-teal-800"], [class~="bg-teal-900"], [class~="bg-indigo-500"], [class~="bg-indigo-600"], [class~="bg-indigo-700"], [class~="bg-indigo-800"], [class~="bg-indigo-900"], [class~="bg-violet-500"], [class~="bg-violet-600"], [class~="bg-violet-700"], [class~="bg-violet-800"], [class~="bg-violet-900"], [class~="bg-purple-500"], [class~="bg-purple-600"], [class~="bg-purple-700"], [class~="bg-purple-800"], [class~="bg-purple-900"], [class~="bg-blue-500"], [class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-blue-800"], [class~="bg-blue-900"], [class~="bg-sky-500"], [class~="bg-sky-600"], [class~="bg-sky-700"], [class~="bg-sky-800"], [class~="bg-sky-900"], [class~="bg-cyan-500"], [class~="bg-cyan-600"], [class~="bg-cyan-700"], [class~="bg-cyan-800"], [class~="bg-cyan-900"], [class~="bg-fuchsia-500"], [class~="bg-fuchsia-600"], [class~="bg-fuchsia-700"], [class~="bg-fuchsia-800"], [class~="bg-fuchsia-900"], [class~="bg-pink-500"], [class~="bg-pink-600"], [class~="bg-pink-700"], [class~="bg-pink-800"], [class~="bg-pink-900"], [class~="bg-amber-500"], [class~="bg-amber-600"], [class~="bg-amber-700"], [class~="bg-amber-800"], [class~="bg-amber-900"], [class~="bg-orange-500"], [class~="bg-orange-600"], [class~="bg-orange-700"], [class~="bg-orange-800"], [class~="bg-orange-900"], [class~="bg-yellow-500"], [class~="bg-yellow-600"], [class~="bg-yellow-700"], [class~="bg-yellow-800"], [class~="bg-yellow-900"]) :is(.text-orange-100, .text-orange-200, .text-orange-300, .text-orange-400, .text-yellow-100, .text-yellow-200, .text-yellow-300, .text-yellow-400, .text-lime-100, .text-lime-200, .text-lime-300, .text-lime-400) { color: #b55a00; }
+.erp-main :is(div, section, article, header):is([class^="p-"], [class*=" p-"], [class^="px-"], [class*=" px-"], [class^="py-"], [class*=" py-"]):not([class*="rounded-full"]):not([class*="fixed"]):is([class~="bg-slate-800"], [class~="bg-slate-900"], [class~="bg-slate-950"], [class~="bg-gray-800"], [class~="bg-gray-900"], [class~="bg-gray-950"], [class~="bg-black"], [class*="bg-gradient-to-"], [class~="bg-rose-500"], [class~="bg-rose-600"], [class~="bg-rose-700"], [class~="bg-rose-800"], [class~="bg-rose-900"], [class~="bg-red-500"], [class~="bg-red-600"], [class~="bg-red-700"], [class~="bg-red-800"], [class~="bg-red-900"], [class~="bg-emerald-500"], [class~="bg-emerald-600"], [class~="bg-emerald-700"], [class~="bg-emerald-800"], [class~="bg-emerald-900"], [class~="bg-green-500"], [class~="bg-green-600"], [class~="bg-green-700"], [class~="bg-green-800"], [class~="bg-green-900"], [class~="bg-teal-500"], [class~="bg-teal-600"], [class~="bg-teal-700"], [class~="bg-teal-800"], [class~="bg-teal-900"], [class~="bg-indigo-500"], [class~="bg-indigo-600"], [class~="bg-indigo-700"], [class~="bg-indigo-800"], [class~="bg-indigo-900"], [class~="bg-violet-500"], [class~="bg-violet-600"], [class~="bg-violet-700"], [class~="bg-violet-800"], [class~="bg-violet-900"], [class~="bg-purple-500"], [class~="bg-purple-600"], [class~="bg-purple-700"], [class~="bg-purple-800"], [class~="bg-purple-900"], [class~="bg-blue-500"], [class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-blue-800"], [class~="bg-blue-900"], [class~="bg-sky-500"], [class~="bg-sky-600"], [class~="bg-sky-700"], [class~="bg-sky-800"], [class~="bg-sky-900"], [class~="bg-cyan-500"], [class~="bg-cyan-600"], [class~="bg-cyan-700"], [class~="bg-cyan-800"], [class~="bg-cyan-900"], [class~="bg-fuchsia-500"], [class~="bg-fuchsia-600"], [class~="bg-fuchsia-700"], [class~="bg-fuchsia-800"], [class~="bg-fuchsia-900"], [class~="bg-pink-500"], [class~="bg-pink-600"], [class~="bg-pink-700"], [class~="bg-pink-800"], [class~="bg-pink-900"], [class~="bg-amber-500"], [class~="bg-amber-600"], [class~="bg-amber-700"], [class~="bg-amber-800"], [class~="bg-amber-900"], [class~="bg-orange-500"], [class~="bg-orange-600"], [class~="bg-orange-700"], [class~="bg-orange-800"], [class~="bg-orange-900"], [class~="bg-yellow-500"], [class~="bg-yellow-600"], [class~="bg-yellow-700"], [class~="bg-yellow-800"], [class~="bg-yellow-900"]) [class*="bg-white/"] { background-color: #f2f2f2; }
+.erp-main :is(div, section, article, header):is([class^="p-"], [class*=" p-"], [class^="px-"], [class*=" px-"], [class^="py-"], [class*=" py-"]):not([class*="rounded-full"]):not([class*="fixed"]):is([class~="bg-slate-800"], [class~="bg-slate-900"], [class~="bg-slate-950"], [class~="bg-gray-800"], [class~="bg-gray-900"], [class~="bg-gray-950"], [class~="bg-black"], [class*="bg-gradient-to-"], [class~="bg-rose-500"], [class~="bg-rose-600"], [class~="bg-rose-700"], [class~="bg-rose-800"], [class~="bg-rose-900"], [class~="bg-red-500"], [class~="bg-red-600"], [class~="bg-red-700"], [class~="bg-red-800"], [class~="bg-red-900"], [class~="bg-emerald-500"], [class~="bg-emerald-600"], [class~="bg-emerald-700"], [class~="bg-emerald-800"], [class~="bg-emerald-900"], [class~="bg-green-500"], [class~="bg-green-600"], [class~="bg-green-700"], [class~="bg-green-800"], [class~="bg-green-900"], [class~="bg-teal-500"], [class~="bg-teal-600"], [class~="bg-teal-700"], [class~="bg-teal-800"], [class~="bg-teal-900"], [class~="bg-indigo-500"], [class~="bg-indigo-600"], [class~="bg-indigo-700"], [class~="bg-indigo-800"], [class~="bg-indigo-900"], [class~="bg-violet-500"], [class~="bg-violet-600"], [class~="bg-violet-700"], [class~="bg-violet-800"], [class~="bg-violet-900"], [class~="bg-purple-500"], [class~="bg-purple-600"], [class~="bg-purple-700"], [class~="bg-purple-800"], [class~="bg-purple-900"], [class~="bg-blue-500"], [class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-blue-800"], [class~="bg-blue-900"], [class~="bg-sky-500"], [class~="bg-sky-600"], [class~="bg-sky-700"], [class~="bg-sky-800"], [class~="bg-sky-900"], [class~="bg-cyan-500"], [class~="bg-cyan-600"], [class~="bg-cyan-700"], [class~="bg-cyan-800"], [class~="bg-cyan-900"], [class~="bg-fuchsia-500"], [class~="bg-fuchsia-600"], [class~="bg-fuchsia-700"], [class~="bg-fuchsia-800"], [class~="bg-fuchsia-900"], [class~="bg-pink-500"], [class~="bg-pink-600"], [class~="bg-pink-700"], [class~="bg-pink-800"], [class~="bg-pink-900"], [class~="bg-amber-500"], [class~="bg-amber-600"], [class~="bg-amber-700"], [class~="bg-amber-800"], [class~="bg-amber-900"], [class~="bg-orange-500"], [class~="bg-orange-600"], [class~="bg-orange-700"], [class~="bg-orange-800"], [class~="bg-orange-900"], [class~="bg-yellow-500"], [class~="bg-yellow-600"], [class~="bg-yellow-700"], [class~="bg-yellow-800"], [class~="bg-yellow-900"]) [class*="border-white/"], .erp-main :is(div, section, article, header):is([class^="p-"], [class*=" p-"], [class^="px-"], [class*=" px-"], [class^="py-"], [class*=" py-"]):not([class*="rounded-full"]):not([class*="fixed"]):is([class~="bg-slate-800"], [class~="bg-slate-900"], [class~="bg-slate-950"], [class~="bg-gray-800"], [class~="bg-gray-900"], [class~="bg-gray-950"], [class~="bg-black"], [class*="bg-gradient-to-"], [class~="bg-rose-500"], [class~="bg-rose-600"], [class~="bg-rose-700"], [class~="bg-rose-800"], [class~="bg-rose-900"], [class~="bg-red-500"], [class~="bg-red-600"], [class~="bg-red-700"], [class~="bg-red-800"], [class~="bg-red-900"], [class~="bg-emerald-500"], [class~="bg-emerald-600"], [class~="bg-emerald-700"], [class~="bg-emerald-800"], [class~="bg-emerald-900"], [class~="bg-green-500"], [class~="bg-green-600"], [class~="bg-green-700"], [class~="bg-green-800"], [class~="bg-green-900"], [class~="bg-teal-500"], [class~="bg-teal-600"], [class~="bg-teal-700"], [class~="bg-teal-800"], [class~="bg-teal-900"], [class~="bg-indigo-500"], [class~="bg-indigo-600"], [class~="bg-indigo-700"], [class~="bg-indigo-800"], [class~="bg-indigo-900"], [class~="bg-violet-500"], [class~="bg-violet-600"], [class~="bg-violet-700"], [class~="bg-violet-800"], [class~="bg-violet-900"], [class~="bg-purple-500"], [class~="bg-purple-600"], [class~="bg-purple-700"], [class~="bg-purple-800"], [class~="bg-purple-900"], [class~="bg-blue-500"], [class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-blue-800"], [class~="bg-blue-900"], [class~="bg-sky-500"], [class~="bg-sky-600"], [class~="bg-sky-700"], [class~="bg-sky-800"], [class~="bg-sky-900"], [class~="bg-cyan-500"], [class~="bg-cyan-600"], [class~="bg-cyan-700"], [class~="bg-cyan-800"], [class~="bg-cyan-900"], [class~="bg-fuchsia-500"], [class~="bg-fuchsia-600"], [class~="bg-fuchsia-700"], [class~="bg-fuchsia-800"], [class~="bg-fuchsia-900"], [class~="bg-pink-500"], [class~="bg-pink-600"], [class~="bg-pink-700"], [class~="bg-pink-800"], [class~="bg-pink-900"], [class~="bg-amber-500"], [class~="bg-amber-600"], [class~="bg-amber-700"], [class~="bg-amber-800"], [class~="bg-amber-900"], [class~="bg-orange-500"], [class~="bg-orange-600"], [class~="bg-orange-700"], [class~="bg-orange-800"], [class~="bg-orange-900"], [class~="bg-yellow-500"], [class~="bg-yellow-600"], [class~="bg-yellow-700"], [class~="bg-yellow-800"], [class~="bg-yellow-900"]) :is(.border-slate-700, .border-slate-800) { border-color: var(--erp-line); }
+.erp-main :is(div, section, article, header):is([class^="p-"], [class*=" p-"], [class^="px-"], [class*=" px-"], [class^="py-"], [class*=" py-"]):not([class*="rounded-full"]):not([class*="fixed"]):is([class~="bg-slate-800"], [class~="bg-slate-900"], [class~="bg-slate-950"], [class~="bg-gray-800"], [class~="bg-gray-900"], [class~="bg-gray-950"], [class~="bg-black"], [class*="bg-gradient-to-"], [class~="bg-rose-500"], [class~="bg-rose-600"], [class~="bg-rose-700"], [class~="bg-rose-800"], [class~="bg-rose-900"], [class~="bg-red-500"], [class~="bg-red-600"], [class~="bg-red-700"], [class~="bg-red-800"], [class~="bg-red-900"], [class~="bg-emerald-500"], [class~="bg-emerald-600"], [class~="bg-emerald-700"], [class~="bg-emerald-800"], [class~="bg-emerald-900"], [class~="bg-green-500"], [class~="bg-green-600"], [class~="bg-green-700"], [class~="bg-green-800"], [class~="bg-green-900"], [class~="bg-teal-500"], [class~="bg-teal-600"], [class~="bg-teal-700"], [class~="bg-teal-800"], [class~="bg-teal-900"], [class~="bg-indigo-500"], [class~="bg-indigo-600"], [class~="bg-indigo-700"], [class~="bg-indigo-800"], [class~="bg-indigo-900"], [class~="bg-violet-500"], [class~="bg-violet-600"], [class~="bg-violet-700"], [class~="bg-violet-800"], [class~="bg-violet-900"], [class~="bg-purple-500"], [class~="bg-purple-600"], [class~="bg-purple-700"], [class~="bg-purple-800"], [class~="bg-purple-900"], [class~="bg-blue-500"], [class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-blue-800"], [class~="bg-blue-900"], [class~="bg-sky-500"], [class~="bg-sky-600"], [class~="bg-sky-700"], [class~="bg-sky-800"], [class~="bg-sky-900"], [class~="bg-cyan-500"], [class~="bg-cyan-600"], [class~="bg-cyan-700"], [class~="bg-cyan-800"], [class~="bg-cyan-900"], [class~="bg-fuchsia-500"], [class~="bg-fuchsia-600"], [class~="bg-fuchsia-700"], [class~="bg-fuchsia-800"], [class~="bg-fuchsia-900"], [class~="bg-pink-500"], [class~="bg-pink-600"], [class~="bg-pink-700"], [class~="bg-pink-800"], [class~="bg-pink-900"], [class~="bg-amber-500"], [class~="bg-amber-600"], [class~="bg-amber-700"], [class~="bg-amber-800"], [class~="bg-amber-900"], [class~="bg-orange-500"], [class~="bg-orange-600"], [class~="bg-orange-700"], [class~="bg-orange-800"], [class~="bg-orange-900"], [class~="bg-yellow-500"], [class~="bg-yellow-600"], [class~="bg-yellow-700"], [class~="bg-yellow-800"], [class~="bg-yellow-900"]) :is(.divide-white\/10, .divide-slate-700) > * + * { border-color: var(--erp-line); }
+.erp-main :is(button, a):is([class~="bg-slate-800"], [class~="bg-slate-900"], [class~="bg-slate-950"], [class~="bg-gray-800"], [class~="bg-gray-900"], [class~="bg-gray-950"], [class~="bg-black"], [class~="bg-indigo-500"], [class~="bg-indigo-600"], [class~="bg-indigo-700"], [class~="bg-indigo-800"], [class~="bg-indigo-900"], [class~="bg-violet-500"], [class~="bg-violet-600"], [class~="bg-violet-700"], [class~="bg-violet-800"], [class~="bg-violet-900"], [class~="bg-purple-500"], [class~="bg-purple-600"], [class~="bg-purple-700"], [class~="bg-purple-800"], [class~="bg-purple-900"], [class~="bg-blue-500"], [class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-blue-800"], [class~="bg-blue-900"], [class~="bg-sky-500"], [class~="bg-sky-600"], [class~="bg-sky-700"], [class~="bg-sky-800"], [class~="bg-sky-900"], [class~="bg-cyan-500"], [class~="bg-cyan-600"], [class~="bg-cyan-700"], [class~="bg-cyan-800"], [class~="bg-cyan-900"], [class~="bg-fuchsia-500"], [class~="bg-fuchsia-600"], [class~="bg-fuchsia-700"], [class~="bg-fuchsia-800"], [class~="bg-fuchsia-900"], [class~="bg-pink-500"], [class~="bg-pink-600"], [class~="bg-pink-700"], [class~="bg-pink-800"], [class~="bg-pink-900"], [class~="bg-amber-500"], [class~="bg-amber-600"], [class~="bg-amber-700"], [class~="bg-amber-800"], [class~="bg-amber-900"]) { background-color: var(--erp-accent); border-color: var(--erp-accent); color: #fff; }
+.erp-main :is(button, a):is([class~="bg-slate-800"], [class~="bg-slate-900"], [class~="bg-slate-950"], [class~="bg-gray-800"], [class~="bg-gray-900"], [class~="bg-gray-950"], [class~="bg-black"], [class~="bg-indigo-500"], [class~="bg-indigo-600"], [class~="bg-indigo-700"], [class~="bg-indigo-800"], [class~="bg-indigo-900"], [class~="bg-violet-500"], [class~="bg-violet-600"], [class~="bg-violet-700"], [class~="bg-violet-800"], [class~="bg-violet-900"], [class~="bg-purple-500"], [class~="bg-purple-600"], [class~="bg-purple-700"], [class~="bg-purple-800"], [class~="bg-purple-900"], [class~="bg-blue-500"], [class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-blue-800"], [class~="bg-blue-900"], [class~="bg-sky-500"], [class~="bg-sky-600"], [class~="bg-sky-700"], [class~="bg-sky-800"], [class~="bg-sky-900"], [class~="bg-cyan-500"], [class~="bg-cyan-600"], [class~="bg-cyan-700"], [class~="bg-cyan-800"], [class~="bg-cyan-900"], [class~="bg-fuchsia-500"], [class~="bg-fuchsia-600"], [class~="bg-fuchsia-700"], [class~="bg-fuchsia-800"], [class~="bg-fuchsia-900"], [class~="bg-pink-500"], [class~="bg-pink-600"], [class~="bg-pink-700"], [class~="bg-pink-800"], [class~="bg-pink-900"], [class~="bg-amber-500"], [class~="bg-amber-600"], [class~="bg-amber-700"], [class~="bg-amber-800"], [class~="bg-amber-900"]):hover:not(:disabled) { background-color: var(--erp-accent-hover); }
+.erp-main :is(button, a):is([class~="bg-slate-800"], [class~="bg-slate-900"], [class~="bg-slate-950"], [class~="bg-gray-800"], [class~="bg-gray-900"], [class~="bg-gray-950"], [class~="bg-black"], [class~="bg-indigo-500"], [class~="bg-indigo-600"], [class~="bg-indigo-700"], [class~="bg-indigo-800"], [class~="bg-indigo-900"], [class~="bg-violet-500"], [class~="bg-violet-600"], [class~="bg-violet-700"], [class~="bg-violet-800"], [class~="bg-violet-900"], [class~="bg-purple-500"], [class~="bg-purple-600"], [class~="bg-purple-700"], [class~="bg-purple-800"], [class~="bg-purple-900"], [class~="bg-blue-500"], [class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-blue-800"], [class~="bg-blue-900"], [class~="bg-sky-500"], [class~="bg-sky-600"], [class~="bg-sky-700"], [class~="bg-sky-800"], [class~="bg-sky-900"], [class~="bg-cyan-500"], [class~="bg-cyan-600"], [class~="bg-cyan-700"], [class~="bg-cyan-800"], [class~="bg-cyan-900"], [class~="bg-fuchsia-500"], [class~="bg-fuchsia-600"], [class~="bg-fuchsia-700"], [class~="bg-fuchsia-800"], [class~="bg-fuchsia-900"], [class~="bg-pink-500"], [class~="bg-pink-600"], [class~="bg-pink-700"], [class~="bg-pink-800"], [class~="bg-pink-900"], [class~="bg-amber-500"], [class~="bg-amber-600"], [class~="bg-amber-700"], [class~="bg-amber-800"], [class~="bg-amber-900"]) svg { color: #fff; }
+.erp-main :is(button, a):is([class~="bg-slate-800"], [class~="bg-slate-900"], [class~="bg-slate-950"], [class~="bg-gray-800"], [class~="bg-gray-900"], [class~="bg-gray-950"], [class~="bg-black"], [class~="bg-indigo-500"], [class~="bg-indigo-600"], [class~="bg-indigo-700"], [class~="bg-indigo-800"], [class~="bg-indigo-900"], [class~="bg-violet-500"], [class~="bg-violet-600"], [class~="bg-violet-700"], [class~="bg-violet-800"], [class~="bg-violet-900"], [class~="bg-purple-500"], [class~="bg-purple-600"], [class~="bg-purple-700"], [class~="bg-purple-800"], [class~="bg-purple-900"], [class~="bg-blue-500"], [class~="bg-blue-600"], [class~="bg-blue-700"], [class~="bg-blue-800"], [class~="bg-blue-900"], [class~="bg-sky-500"], [class~="bg-sky-600"], [class~="bg-sky-700"], [class~="bg-sky-800"], [class~="bg-sky-900"], [class~="bg-cyan-500"], [class~="bg-cyan-600"], [class~="bg-cyan-700"], [class~="bg-cyan-800"], [class~="bg-cyan-900"], [class~="bg-fuchsia-500"], [class~="bg-fuchsia-600"], [class~="bg-fuchsia-700"], [class~="bg-fuchsia-800"], [class~="bg-fuchsia-900"], [class~="bg-pink-500"], [class~="bg-pink-600"], [class~="bg-pink-700"], [class~="bg-pink-800"], [class~="bg-pink-900"], [class~="bg-amber-500"], [class~="bg-amber-600"], [class~="bg-amber-700"], [class~="bg-amber-800"], [class~="bg-amber-900"]) :is([class*="text-blue-"], [class*="text-indigo-"], [class*="text-sky-"], [class*="text-slate-"], [class*="text-amber-"], [class*="text-violet-"]) { color: rgba(255, 255, 255, .85); }
+.erp-main :is(button, a):is([class*="shadow-lg"], [class*="shadow-md"], [class*="shadow-xl"]) { box-shadow: none; }
+
+
+/* Older forms and dialogs: sentence-case grey labels, white fields, a plain dimmed backdrop (no blur), flat header and footer bars */
+.erp-main label:is(.uppercase, [class*="tracking-wider"], [class*="tracking-widest"]) { font-size: 13px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--erp-muted); }
+.erp-main :is(input, select, textarea):is(.bg-slate-50, .bg-gray-50) { background-color: #fff; }
+.erp-main [class*="backdrop-blur"] { --tw-backdrop-blur: blur(0); }
+.erp-main :is(.fixed, .absolute).inset-0:is(.bg-slate-900\/60, .bg-slate-900\/50, .bg-slate-900\/40, .bg-black\/50, .bg-black\/40) { background-color: rgba(0, 0, 0, .35); }
+.erp-main [class*="bg-white"][class*="shadow-2xl"] > :is(div, form) > div:first-child.border-b,
+.erp-main [class*="bg-white"][class*="shadow-2xl"] > div:first-child.border-b { background: #fff; border-color: var(--erp-line); }
+.erp-main [class*="bg-white"][class*="shadow-2xl"] :is(h2, h3).font-bold { font-size: 1rem; font-weight: 600; }
+.erp-main [class*="bg-white"][class*="shadow-2xl"] div.border-t:last-child { background: #fafafa; border-color: var(--erp-line); }
+
+/* ==================== SIGN-IN PAGES ==================== */
+.auth-page { display: flex; min-height: 100vh; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; padding: 2rem 1rem; background: linear-gradient(180deg, #e5edf5 0%, var(--erp-canvas) 60%); color: var(--erp-ink); font-family: var(--erp-font); font-size: 14px; }
+.auth-card { width: 100%; max-width: 24rem; padding: 2rem 2rem 1.5rem; border-radius: .5rem; background: #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, .06), 0 8px 24px rgba(0, 0, 0, .08); }
+.auth-card__brand { display: flex; align-items: center; gap: .6rem; margin-bottom: 1.25rem; }
+.auth-card__brand img { width: 2.25rem; height: 2.25rem; border-radius: .25rem; object-fit: contain; }
+.auth-card__brand span { font-size: 15px; font-weight: 700; }
+.auth-card h1 { margin: 0 0 .25rem; font-size: 1.375rem; font-weight: 400; }
+.auth-card > p { margin: 0 0 1.25rem; font-size: 13px; color: var(--erp-muted); }
+.auth-card form { display: flex; flex-direction: column; gap: 1rem; }
+.auth-card .lbl > .input { margin-top: .3rem; height: 2.5rem; }
+.auth-card .input:focus { outline: 1px dotted var(--erp-ink); outline-offset: -4px; border-color: var(--erp-accent); }
+.auth-card .btn { width: 100%; height: 2.5rem; }
+.auth-card__footer { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--erp-line); font-size: 13px; color: var(--erp-muted); text-align: center; }
+.auth-card__footer a, .auth-link { color: var(--erp-accent); }
+.auth-card__footer a:hover, .auth-link:hover { text-decoration: underline; }
+.auth-note { font-size: 12px; color: var(--erp-muted); }

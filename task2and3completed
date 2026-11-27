@@ -1,0 +1,19 @@
+# Tasks - Phase 2 & 3 Implementation
+
+- [x] **Phase 2: Product Management Completion**
+    - [x] Create `components/modals/ProductModal.tsx` (Multi-step)
+    - [x] Update `app/(dashboard)/dashboard/products/page.tsx` (Fetch & Modal)
+    - [x] Implement `POST /api/products` (if not already fully functional)
+- [x] **Phase 3: Purchase & Batching (Stock In)**
+    - [x] Create `models/Supplier.ts`
+    - [x] Create `models/PurchaseOrder.ts`
+    - [x] Create `models/Batch.ts`
+    - [x] Create API Route `/api/suppliers`
+    - [x] Create API Route `/api/purchase`
+    - [x] Create API Route `/api/inventory/batches`
+    - [x] Create `app/(dashboard)/dashboard/suppliers/page.tsx`
+    - [x] Create `app/(dashboard)/dashboard/purchase/page.tsx`
+    - [x] Create `components/modals/PurchaseOrderModal.tsx`
+- [x] **Verification**
+    - [x] Manual test: Create Product -> Create Supplier -> Create PO -> Receive PO
+    - [x] Verify Batch record creation

@@ -1,0 +1,21 @@
+# Task - Inventory Management System (Inventry Pro Foods)
+
+- [x] **Phase 1: Foundation & Authentication**
+    - [x] Install `mongoose`, `jose`, `cookie`, and `lucide-react`
+    - [x] Create `lib/mongodb.ts` (DB Connection)
+    - [x] Create `models/User.ts` (User Schema with Roles)
+    - [x] Implement `lib/auth.ts` (JWT/Session Utility)
+    - [x] Setup `middleware.ts` (Role-based Route Protection)
+    - [x] Create `app/layout.tsx` (Sidebar/Topbar Shell)
+    - [x] Create `app/(auth)/login/page.tsx` (Login UI)
+- [x] **Phase 2: Product & Category Catalog**
+    - [x] Create `models/Category.ts` (Hierarchical)
+    - [x] Create `models/Product.ts` (SKU, UOM, Min Stock)
+    - [x] Create `app/(dashboard)/dashboard/products/page.tsx` (Catalog UI)
+    - [x] Implement API routes for Products and Categories
+    - [ ] Create `components/modals/ProductModal.tsx` (Multi-step Creation)
+- [ ] **Phase 3: Purchase & Batching (Stock In)**
+- [ ] **Phase 4: Order Management & FEFO (Stock Out)**
+- [ ] **Phase 5: Warehouse Operations (Pick & Pack)**
+- [ ] **Phase 6: Quality Control & Adjustments**
+- [ ] **Phase 7: Reporting, Dashboard & Alerts**

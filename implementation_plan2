@@ -1,0 +1,62 @@
+# Implementation Plan - Phase 2 Completion & Phase 3 (Purchase & Batching)
+
+This plan outlines the next steps to complete the Product Catalog and implement the Purchase & Batching system for Inventry Pro Foods.
+
+## User Review Required
+
+> [!IMPORTANT]
+> **Batch Numbering:** Should batch numbers be auto-generated (e.g., BN-YYYYMMDD-XXX) or manually entered based on supplier labels?
+> **Tax Implementation:** Should PO amounts include GST/Tax automatically, or should they be entered as gross totals?
+
+---
+
+## Proposed Changes
+
+### Phase 2: Product Management Completion
+
+#### [NEW] [ProductModal.tsx](file:///c:/2026/z/inventory/components/modals/ProductModal.tsx)
+- A multi-step modal for adding/editing products.
+- **Step 1: General Info** (Name, Description, Image).
+- **Step 2: Classification** (Category, SKU, Barcode).
+- **Step 3: Inventory Rules** (UOM, Min Stock Level).
+
+#### [MODIFY] [products/page.tsx](file:///c:/2026/z/inventory/app/(dashboard)/dashboard/products/page.tsx)
+- Fetch products from `/api/products` using `SWR` or `useEffect`.
+- Integrate the `ProductModal`.
+- Implement basic search and status filtering (client-side).
+
+---
+
+### Phase 3: Purchase & Batching (Stock In)
+
+#### [NEW] [Supplier.ts](file:///c:/2026/z/inventory/models/Supplier.ts)
+- `name`, `code` (Unique), `contactPerson`, `email`, `phone`, `address`, `isActive`.
+
+#### [NEW] [PurchaseOrder.ts](file:///c:/2026/z/inventory/models/PurchaseOrder.ts)
+- `poNumber` (Auto-inc preferred), `supplier` (Ref), `items` (Product, Quantity, UnitPrice), `status` (DRAFT, ORDERED, RECEIVED, CANCELLED), `totalAmount`.
+
+#### [NEW] [Batch.ts](file:///c:/2026/z/inventory/models/Batch.ts)
+- `product` (Ref), `batchNumber`, `mfgDate`, `expiryDate`, `initialQty`, `currentQty`, `po` (Ref), `purchasePrice`.
+
+#### [NEW] [Purchase API Routes](file:///c:/2026/z/inventory/app/api/purchase/route.ts)
+- Handle PO creation and status updates.
+- **Auto-Logic:** When PO status changes to `RECEIVED`, create `Batch` records and increment product stock counts.
+
+#### [NEW] [Purchase Management UI](file:///c:/2026/z/inventory/app/(dashboard)/dashboard/purchase/page.tsx)
+- Dashboard for POs.
+- "Create PO" flow with item selection.
+
+---
+
+## Open Questions
+
+- **SKU Generation:** Should SKUs be manually entered or auto-generated based on category prefixes?
+- **Expiry Alerts:** How many days before expiry should a batch be flagged as "At Risk"?
+
+## Verification Plan
+
+### Automated Tests
+- Test PO receipt logic: Verify that changing PO status to `RECEIVED` correctly creates `Batch` documents and updates cumulative stock levels.
+
+### Manual Verification
+- Create a Category -> Create a Product -> Create a Supplier -> Create a PO -> Receive PO -> Check Inventory/Batches.

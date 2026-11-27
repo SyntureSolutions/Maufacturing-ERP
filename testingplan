@@ -1,0 +1,69 @@
+# Master Testing & Verification Plan
+
+This plan outlines a comprehensive, script-based testing strategy to verify the integrity of all features across Phases 1–5 of the Inventory Management System.
+
+## User Review Required
+
+> [!IMPORTANT]
+> **Environment:** The tests will run against the local development server (http://localhost:3000). Ensure the `npm run dev` command is running during verification.
+> **Database:** These tests will create real records in your local MongoDB instance. We recommend clearing temporary/mock data before and after the tests.
+
+---
+
+## Testing Strategy
+
+I will create a modular testing suite in the `tests/` directory. Each script will target a specific phase and will use standard Node.js logic to interact with your API endpoints.
+
+### Phase 1: Authentication & Security
+- **Target:** `lib/auth.ts`, `middleware.ts`.
+- **Test:** `tests/auth.test.ts`
+  - Attempt to access `/api/products` without a session (Expected: 401).
+  - Perform login and retrieve session cookie.
+  - Verify access with valid cookie.
+
+### Phase 2: Product & Category
+- **Target:** `/api/categories`, `/api/products`.
+- **Test:** `tests/catalog.test.ts`
+  - Create a "Base" category.
+  - Create a product linked to "Base".
+  - Verify the product appears in the list with correct stock (0 initially).
+
+### Phase 3: Purchase & Batching (Stock In)
+- **Target:** `/api/purchase`, `/api/inventory/batches`.
+- **Test:** `tests/procurement.test.ts`
+  - Create a mock supplier.
+  - Create a Purchase Order for 100 units.
+  - Update status to `RECEIVED`.
+  - **Verify:** Fetch `/api/inventory/batches` and confirm a new batch exists for that product with `initialQuantity: 100`.
+
+### Phase 4: FEFO Allocation & Orders (Stock Out)
+- **Target:** `/api/orders`, `lib/allocation.ts`.
+- **Test:** `tests/orders_fefo.test.ts`
+  - **Step 1:** Add two batches for "Product X":
+    - Batch A: Expiry May 2026 (50 units).
+    - Batch B: Expiry June 2026 (100 units).
+  - **Step 2:** Create an Order for 60 units.
+  - **Verify Allocation:** The order should allocate 50 units from Batch A and 10 units from Batch B.
+  - **Step 3:** Update order status to `SHIPPED`.
+  - **Verify Final Deductions:** Batch A currentQuantity should be 0; Batch B should be 90.
+
+### Phase 5: Reporting & Adjustments
+- **Target:** `/api/inventory/adjust`, `/api/inventory/batches`.
+- **Test:** `tests/reports.test.ts`
+  - Fetch inventory valuation.
+  - Adjust Batch B by -10 (Damage).
+  - Verify valuation decreases accordingly.
+
+---
+
+## Execution Workflow
+
+1.  **Preparation**: Install any necessary lightweight dependencies if needed (e.g., `ts-node` to run TypeScript tests directly).
+2.  **Script Creation**: Write the phase-wise test scripts.
+3.  **Baseline Run**: Run all tests and capture console logs.
+4.  **Reporting**: Create a `verification_report.md` (Walkthrough) summarizing the results.
+
+## Open Questions
+
+- Should I include a "Cleanup" step that deletes the test data after each run, or would you like to see the test records in your UI dashboards?
+- Do you want me to mock the authentication or use the real login endpoint with a test admin user?

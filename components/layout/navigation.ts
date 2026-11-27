@@ -1,0 +1,56 @@
+// Which roles may open each screen (ADMIN opens everything). The menu bar hides what a role may not open; the API still enforces the real permission.
+export const ROLE_ACCESS: Record<string, string[]> = {
+  '/dashboard': ['ADMIN', 'MANAGER', 'STAFF', 'SALES', 'VIEWER', 'PRODUCTION_MANAGER', 'QUALITY_INSPECTOR', 'FINANCE_MANAGER', 'HR_MANAGER', 'SUPPLY_CHAIN_MANAGER'],
+  '/dashboard/products': ['ADMIN', 'MANAGER', 'STAFF', 'SALES', 'VIEWER', 'PRODUCTION_MANAGER', 'QUALITY_INSPECTOR', 'HR_MANAGER'],
+  '/dashboard/suppliers': ['ADMIN', 'MANAGER', 'VIEWER', 'SUPPLY_CHAIN_MANAGER'],
+  '/dashboard/source-lists': ['ADMIN', 'MANAGER', 'SUPPLY_CHAIN_MANAGER', 'VIEWER'],
+  '/dashboard/storage-locations': ['ADMIN', 'MANAGER', 'SUPPLY_CHAIN_MANAGER', 'STAFF', 'VIEWER'],
+  '/dashboard/purchase': ['ADMIN', 'MANAGER', 'VIEWER', 'SUPPLY_CHAIN_MANAGER'],
+  '/dashboard/transactions/purchase-order': ['ADMIN', 'MANAGER', 'VIEWER', 'SUPPLY_CHAIN_MANAGER', 'FINANCE_MANAGER'],
+  '/dashboard/executive': ['ADMIN', 'MANAGER', 'STAFF', 'SALES', 'VIEWER', 'PRODUCTION_MANAGER', 'QUALITY_INSPECTOR', 'FINANCE_MANAGER', 'HR_MANAGER', 'SUPPLY_CHAIN_MANAGER'],
+  '/dashboard/sales': ['ADMIN', 'MANAGER', 'STAFF', 'SALES', 'VIEWER', 'SUPPLY_CHAIN_MANAGER'],
+  '/dashboard/orders': ['ADMIN', 'MANAGER', 'STAFF', 'SALES', 'VIEWER', 'SUPPLY_CHAIN_MANAGER'],
+  '/dashboard/inventory': ['ADMIN', 'MANAGER', 'STAFF', 'VIEWER', 'PRODUCTION_MANAGER', 'SUPPLY_CHAIN_MANAGER'],
+  '/dashboard/production': ['ADMIN', 'MANAGER', 'PRODUCTION_MANAGER', 'HR_MANAGER', 'VIEWER'],
+  '/dashboard/procurement': ['ADMIN', 'MANAGER', 'PRODUCTION_MANAGER', 'SUPPLY_CHAIN_MANAGER', 'VIEWER'],
+  '/dashboard/order-desk': ['ADMIN', 'MANAGER', 'SALES', 'STAFF', 'VIEWER', 'PRODUCTION_MANAGER', 'SUPPLY_CHAIN_MANAGER'],
+  '/dashboard/masters/items': ['ADMIN', 'MANAGER', 'STAFF', 'SALES', 'VIEWER', 'PRODUCTION_MANAGER', 'QUALITY_INSPECTOR', 'HR_MANAGER', 'SUPPLY_CHAIN_MANAGER', 'FINANCE_MANAGER'],
+  '/dashboard/masters/hsn': ['ADMIN', 'MANAGER', 'STAFF', 'SALES', 'VIEWER', 'PRODUCTION_MANAGER', 'SUPPLY_CHAIN_MANAGER', 'FINANCE_MANAGER'],
+  '/dashboard/transactions/quotation': ['ADMIN', 'MANAGER', 'SALES', 'STAFF', 'VIEWER', 'FINANCE_MANAGER'],
+  '/dashboard/transactions/sales-order': ['ADMIN', 'MANAGER', 'SALES', 'STAFF', 'VIEWER', 'PRODUCTION_MANAGER', 'SUPPLY_CHAIN_MANAGER', 'FINANCE_MANAGER'],
+  '/dashboard/bill-of-entry': ['ADMIN', 'MANAGER', 'FINANCE_MANAGER', 'SUPPLY_CHAIN_MANAGER', 'VIEWER'],
+  '/dashboard/grn': ['ADMIN', 'MANAGER', 'STAFF', 'SUPPLY_CHAIN_MANAGER', 'QUALITY_INSPECTOR', 'VIEWER'],
+  '/dashboard/transactions/grn': ['ADMIN', 'MANAGER', 'STAFF', 'SUPPLY_CHAIN_MANAGER', 'QUALITY_INSPECTOR', 'VIEWER'],
+  '/dashboard/production/wip': ['ADMIN', 'MANAGER', 'PRODUCTION_MANAGER', 'QUALITY_INSPECTOR', 'STAFF', 'VIEWER'],
+  '/dashboard/labels': ['ADMIN', 'MANAGER', 'STAFF', 'PRODUCTION_MANAGER', 'QUALITY_INSPECTOR', 'VIEWER'],
+  '/dashboard/dispatch': ['ADMIN', 'MANAGER', 'SALES', 'FINANCE_MANAGER', 'SUPPLY_CHAIN_MANAGER', 'STAFF', 'VIEWER'],
+  '/dashboard/vouchers': ['ADMIN', 'FINANCE_MANAGER', 'VIEWER'],
+  '/dashboard/accounting-reports': ['ADMIN', 'MANAGER', 'FINANCE_MANAGER', 'VIEWER'],
+  '/dashboard/jobwork': ['ADMIN', 'MANAGER', 'PRODUCTION_MANAGER', 'SUPPLY_CHAIN_MANAGER', 'FINANCE_MANAGER', 'VIEWER'],
+  '/dashboard/period-lock': ['ADMIN', 'FINANCE_MANAGER'],
+  '/dashboard/approval-matrix': ['ADMIN', 'MANAGER', 'FINANCE_MANAGER', 'SUPPLY_CHAIN_MANAGER', 'PRODUCTION_MANAGER', 'HR_MANAGER'],
+  '/dashboard/notifications': ['ADMIN', 'MANAGER', 'SUPPLY_CHAIN_MANAGER', 'SALES', 'FINANCE_MANAGER'],
+  '/dashboard/tally': ['ADMIN', 'FINANCE_MANAGER'],
+  '/dashboard/bi': ['ADMIN', 'MANAGER', 'FINANCE_MANAGER', 'PRODUCTION_MANAGER', 'SUPPLY_CHAIN_MANAGER', 'SALES', 'VIEWER'],
+  '/dashboard/crm': ['ADMIN', 'MANAGER', 'SALES', 'STAFF', 'VIEWER'],
+  '/dashboard/oee': ['ADMIN', 'MANAGER', 'PRODUCTION_MANAGER', 'STAFF', 'VIEWER'],
+  '/dashboard/vendor-bills': ['ADMIN', 'FINANCE_MANAGER', 'MANAGER', 'VIEWER'],
+  '/dashboard/mrp': ['ADMIN', 'MANAGER', 'PRODUCTION_MANAGER', 'SUPPLY_CHAIN_MANAGER', 'VIEWER'],
+  '/dashboard/quality': ['ADMIN', 'MANAGER', 'QUALITY_INSPECTOR', 'PRODUCTION_MANAGER', 'HR_MANAGER', 'VIEWER'],
+  '/dashboard/labour': ['ADMIN', 'MANAGER', 'HR_MANAGER', 'PRODUCTION_MANAGER', 'VIEWER'],
+  '/dashboard/projects': ['ADMIN', 'MANAGER', 'SALES', 'HR_MANAGER', 'VIEWER'],
+  '/dashboard/finance': ['ADMIN', 'MANAGER', 'FINANCE_MANAGER', 'HR_MANAGER', 'VIEWER'],
+  '/dashboard/gst': ['ADMIN', 'MANAGER', 'FINANCE_MANAGER', 'VIEWER'],
+  '/dashboard/supply-chain': ['ADMIN', 'MANAGER', 'SUPPLY_CHAIN_MANAGER', 'HR_MANAGER', 'VIEWER'],
+  '/dashboard/export-import': ['ADMIN', 'MANAGER', 'SUPPLY_CHAIN_MANAGER', 'SALES', 'VIEWER'],
+  '/dashboard/reports': ['ADMIN', 'MANAGER', 'SALES', 'VIEWER', 'FINANCE_MANAGER', 'PRODUCTION_MANAGER', 'HR_MANAGER'],
+  '/dashboard/approvals': ['ADMIN', 'MANAGER', 'FINANCE_MANAGER', 'SUPPLY_CHAIN_MANAGER', 'HR_MANAGER'],
+  '/dashboard/audit': ['ADMIN', 'MANAGER', 'HR_MANAGER'],
+};
+
+export const canOpen = (role: string, href: string) => role === 'ADMIN' || !!ROLE_ACCESS[href]?.includes(role);
+
+/** The screen a path belongs to (the longest listed prefix), e.g. /dashboard/purchase/123 -> /dashboard/purchase. */
+export function screenOf(pathname: string) {
+  return Object.keys(ROLE_ACCESS).filter(k => pathname === k || pathname.startsWith(`${k}/`)).sort((a, b) => b.length - a.length)[0] || null;
+}
